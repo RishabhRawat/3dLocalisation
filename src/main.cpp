@@ -17,18 +17,9 @@ void listFiles(const char* path, vector<string>& returnFileName)
     if (dirFile) {
 	struct dirent* hFile;
 	while ((hFile = readdir(dirFile)) != NULL) {
-	    if (!strcmp(hFile->d_name, "."))
-		continue;
-	    if (!strcmp(hFile->d_name, ".."))
+	    if (hFile->d_name[0] == '.') // ignore hidden files, current directory, and up directory
 		continue;
 
-	    // in linux hidden files all start with '.'
-	    if (hFile->d_name[0] == '.')
-		continue;
-
-	    // dirFile.name is the name of the file. Do whatever string comparison
-	    // you want here. Something like:
-	    // printf( "found an .txt file: %s", hFile->d_name );
 	    returnFileName.push_back(string(hFile->d_name));
 	    sort(returnFileName.begin(), returnFileName.end());
 	}
@@ -113,7 +104,6 @@ int main(int argc, char** argv)
 		}
 
 		//-- Localize the object
-		//-- Localize the object
 		std::vector<Point2f> object_1, object_2;
 
 		for (unsigned int i = 0; i < good_matches.size(); i++) {
@@ -125,7 +115,7 @@ int main(int argc, char** argv)
 		Mat H = findHomography(object_1, object_2, CV_RANSAC);
 		if(H.data == NULL)
 		{
-				cout<<"Could'nt Find Homography";
+				cout<<"Couldn't Find Homography";
 				continue;
 		}
 				
@@ -134,6 +124,7 @@ int main(int argc, char** argv)
 		std::vector<Mat> rot, trans, scale;
 		decomposeHomographyMat(H, IntCamMat, rot, trans, scale);
 		
+		// TODO correct this and plot
 		x = x+trans[0];
 		cout<<x;
 		
