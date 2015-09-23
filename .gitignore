@@ -1,2 +1,9 @@
+#Directories
 Release/
 Debug/
+
+#Backup Files
+*~
+*.bak
+*.swp*
+
