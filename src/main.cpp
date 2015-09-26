@@ -115,35 +115,30 @@ int main(int argc, char** argv)
 			object_1.push_back(keypoints_object_1[good_matches[i].queryIdx].pt);
 			object_2.push_back(keypoints_object_2[good_matches[i].trainIdx].pt);
 		}
-		Mat E, R, t, masks;
 		
-		E = findEssentialMat(object_1, object_2, 537, Point2f(320.1, 247.6), RANSAC, 0.999, 1.0, masks);
-		recoverPose(E, object_1, object_2, R, t, 537, Point2f(320.1, 247.6), masks);
-		y = x+t;
-		cout<<t<<endl;
-		cout<<t.at<double>(0)<<" "<<t.at<double>(2)<<endl;
-		cout<<Point2d(t.at<double>(0),t.at<double>(2))<<endl;
-		line(plot,Point2d(3*x.at<double>(0,0)+127,3*x.at<double>(0,2)+127),Point2d(3*y.at<double>(0,0)+127,3*y.at<double>(0,2)+127),Scalar(255,255,255));
+		
+
+		Mat H = findHomography(object_1, object_2, CV_RANSAC);
+		if(H.data == NULL)
+		{
+				cout<<"Couldn't Find Homography";
+				continue;
+		}
+				
+
+		// OutputArrayOfArrays rot, trans, scale;
+		std::vector<Mat> rot, t, scale;
+		decomposeHomographyMat(H, IntCamMat, rot, t, scale);
+		
+		y = x+t[0];
+		cout<<t[0]<<endl;
+		cout<<t[0].at<double>(0)<<" "<<t[0].at<double>(2)<<endl;
+		cout<<Point2d(t[0].at<double>(0),t[0].at<double>(2))<<endl;
+		line(plot,Point2d(10*x.at<double>(0,0)+127,10*x.at<double>(0,2)+127),Point2d(10*y.at<double>(0,0)+127,10*y.at<double>(0,2)+127),Scalar(255,255,255));
 		imshow("Plot",plot);
 		waitKey(13);
-		//cout<<t;
-
-
-
-//		Mat H = findHomography(object_1, object_2, CV_RANSAC);
-//		if(H.data == NULL)
-//		{
-//				cout<<"Couldn't Find Homography";
-//				continue;
-//		}
-//				
-//
-//		// OutputArrayOfArrays rot, trans, scale;
-//		std::vector<Mat> rot, trans, scale;
-//		decomposeHomographyMat(H, IntCamMat, rot, trans, scale);
 		
-		// TODO correct this and plot
-		x = x+t;
+		x = x+t[0];
 		//cout<<x<<endl;
 		
 		descriptors_object_1 = descriptors_object_2;
