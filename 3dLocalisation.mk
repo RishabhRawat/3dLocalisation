@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=spike
-Date                   :=27/09/15
+Date                   :=30/09/15
 CodeLitePath           :="/home/spike/.codelite"
 LinkerName             :=/usr/bin/g++-4.9
 SharedObjectLinkerName :=/usr/bin/g++-4.9 -shared -fPIC
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_3ddepthmap.cpp$(ObjectSuffix) 
 
 
 
@@ -91,13 +91,13 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix): src/main.cpp $(IntermediateDirectory)/src_main.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/spike/Workspace/Codelite/3dLocalisation/src/main.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_main.cpp$(DependSuffix): src/main.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_main.cpp$(DependSuffix) -MM "src/main.cpp"
+$(IntermediateDirectory)/src_3ddepthmap.cpp$(ObjectSuffix): src/3ddepthmap.cpp $(IntermediateDirectory)/src_3ddepthmap.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/spike/Workspace/Codelite/3dLocalisation/src/3ddepthmap.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_3ddepthmap.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_3ddepthmap.cpp$(DependSuffix): src/3ddepthmap.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_3ddepthmap.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_3ddepthmap.cpp$(DependSuffix) -MM "src/3ddepthmap.cpp"
 
-$(IntermediateDirectory)/src_main.cpp$(PreprocessSuffix): src/main.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_main.cpp$(PreprocessSuffix) "src/main.cpp"
+$(IntermediateDirectory)/src_3ddepthmap.cpp$(PreprocessSuffix): src/3ddepthmap.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_3ddepthmap.cpp$(PreprocessSuffix) "src/3ddepthmap.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

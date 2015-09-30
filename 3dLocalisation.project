@@ -110,6 +110,7 @@
     </Configuration>
   </Settings>
   <VirtualDirectory Name="src">
-    <File Name="src/main.cpp"/>
+    <File Name="src/3dlocalisation.cpp" ExcludeProjConfig="Debug"/>
+    <File Name="src/3ddepthmap.cpp"/>
   </VirtualDirectory>
 </CodeLite_Project>
