@@ -11,34 +11,6 @@
 using namespace cv;
 using namespace std;
 void readme();
-cv::Vec3f *StereoFrame::compute_3D_world_coordinates(int row, int col,
-  shared_ptr<StereoParameters> stereo_params_sptr){
-
- cv::Mat Q_32F;
-
- stereo_params_sptr->Q_sptr->convertTo(Q_32F,CV_32F);
- cv::Mat_<float> vec(4,1);
-
- vec(0) = col;
- vec(1) = row;
- vec(2) = this->disparity_sptr->at<float>(row,col);
-
- // Discard points with 0 disparity    
- if(vec(2)==0) return NULL;
- vec(3)=1;              
- vec = Q_32F*vec;
- vec /= vec(3);
- // Discard points that are too far from the camera, and thus are highly
- // unreliable
- if(abs(vec(0))>10 || abs(vec(1))>10 || abs(vec(2))>10) return NULL;
-
- cv::Vec3f *point3f = new cv::Vec3f();
- (*point3f)[0] = vec(0);
- (*point3f)[1] = vec(1);
- (*point3f)[2] = vec(2);
-
-    return point3f;
-}
 void listFiles(const char* path, vector<string>& returnFileName)
 {
     DIR* dirFile = opendir(path);
@@ -160,78 +132,107 @@ int main(int argc, char** argv)
 	Mat E, R, t, masks;
 	Mat distortion = Mat::zeros(1,5,CV_64F);
 	
-	
-	E = findEssentialMat(object_1, object_2, 537, Point2f(320.1, 247.6), RANSAC, 0.999, 1.0, masks);
-	recoverPose(E, object_1, object_2, R, t, 537, Point2f(320.1, 247.6), masks);
-	Mat R1,R2,P1,P2,Q;
-	Rect roi1, roi2;
-	Size imgsize = img_object_1.size();
-	stereoRectify( IntCamMat, distortion, IntCamMat, distortion, imgsize, R, t, R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, -1, imgsize, &roi1, &roi2 );
-	
-	 Mat map11, map12, map21, map22;
-	initUndistortRectifyMap(IntCamMat, distortion, R1, P1, imgsize, CV_16SC2, map11, map12);
-	initUndistortRectifyMap(IntCamMat, distortion, R2, P2, imgsize, CV_16SC2, map21, map22);
-
-	Mat img1r, img2r;
-	remap(img_object_1, img1r, map11, map12, INTER_LINEAR);
-	remap(img_object_2, img2r, map21, map22, INTER_LINEAR);
+	Mat img_matches;
+  /*drawMatches( img_object_1, keypoints_object_1, img_object_2, keypoints_object_2,
+               good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
+               vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
 	imshow("MyImage",img_object_1);
     waitKey(0);
-	imshow("MyImage",img1r);
+    imshow("plot",img_object_2);
     waitKey(0);
-    imshow("MyImage",img_object_2);
+	imshow("MyImage",img_matches);
     waitKey(0);
-	imshow("MyImage",img2r);
+	while(1);
+	*/
+	Mat output;
+	Size a = img_object_1.size();
+	Mat H = findHomography( object_1, object_2, CV_RANSAC );
+	std::vector<Mat> rot, t2, scale;
+	decomposeHomographyMat(H, IntCamMat, rot, t2, scale);
+		
+	warpPerspective( object_2, output, rot[0], a);
+	imshow("MyImage",img_object_1);
     waitKey(0);
+    imshow("Plot",img_object_2);
+    waitKey(0);
+	imshow("MyImage2",output);
+    waitKey(0);
+	while(1);
 	
-	img_object_1 = img1r;
-	img_object_2 = img2r;
- Mat disp, disp8;
-
 	
-	Ptr<StereoSGBM> sgbm = StereoSGBM::create(0,16,3);
-	int SADWindowSize = 0;
-	sgbm->setPreFilterCap(63);
-	int sgbmWinSize = SADWindowSize > 0 ? SADWindowSize : 5;
-    sgbm->setBlockSize(sgbmWinSize);
-
-    int cn = img_object_1.channels();
-	int numberOfDisparities = 64;
-    sgbm->setP1(8*cn*sgbmWinSize*sgbmWinSize);
-    sgbm->setP2(32*cn*sgbmWinSize*sgbmWinSize);
-    sgbm->setMinDisparity(0);
-    sgbm->setNumDisparities(numberOfDisparities);
-    sgbm->setUniquenessRatio(10);
-    sgbm->setSpeckleWindowSize(100);
-    sgbm->setSpeckleRange(32);
-    sgbm->setDisp12MaxDiff(1);
-
-	sgbm->setMode(StereoSGBM::MODE_SGBM);
-
-     int64 t1 = getTickCount();
-	sgbm->compute(img_object_1, img_object_2, disp);
-	t1 = getTickCount() - t1;
-    printf("Time elapsed: %fms\n", t1*1000/getTickFrequency());
-
-	disp.convertTo(disp8, CV_8U, 255/(numberOfDisparities*16.));
-    
-	namedWindow("left", 1);
-	imshow("left", img_object_1);
-	namedWindow("right", 1);
-	imshow("right", img_object_2);
-	namedWindow("disparity", 0);
-	imshow("disparity", disp8);
-	printf("press any key to continue...");
-	fflush(stdout);
-	waitKey();
-	printf("\n");
-
-        printf("storing the point cloud...");
-        fflush(stdout);
-        Mat xyz;
-        reprojectImageTo3D(disp, xyz, Q, true);
-        saveXYZ("point_cloud.xyz", xyz);
-        printf("\n");
+	
+//	
+//	E = findEssentialMat(object_1, object_2, 537, Point2f(320.1, 247.6), RANSAC, 0.999, 1.0, masks);
+//	recoverPose(E, object_1, object_2, R, t, 537, Point2f(320.1, 247.6), masks);
+//	Mat R1,R2,P1,P2,Q;
+//	Rect roi1, roi2;
+//	Size imgsize = img_object_1.size();
+//	stereoRectify( IntCamMat, distortion, IntCamMat, distortion, imgsize, R, t, R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, -1, imgsize, &roi1, &roi2 );
+//	
+//	 Mat map11, map12, map21, map22;
+//	initUndistortRectifyMap(IntCamMat, distortion, R1, P1, imgsize, CV_16SC2, map11, map12);
+//	initUndistortRectifyMap(IntCamMat, distortion, R2, P2, imgsize, CV_16SC2, map21, map22);
+//
+//	Mat img1r, img2r;
+//	remap(img_object_1, img1r, map11, map12, INTER_LINEAR);
+//	remap(img_object_2, img2r, map21, map22, INTER_LINEAR);
+//	imshow("MyImage",img_object_1);
+//    waitKey(0);
+//	imshow("MyImage",img1r);
+//    waitKey(0);
+//    imshow("MyImage",img_object_2);
+//    waitKey(0);
+//	imshow("MyImage",img2r);
+//    waitKey(0);
+//	
+//	img_object_1 = img1r;
+//	img_object_2 = img2r;
+// Mat disp, disp8;
+//
+//	
+//	Ptr<StereoSGBM> sgbm = StereoSGBM::create(0,16,3);
+//	int SADWindowSize = 0;
+//	sgbm->setPreFilterCap(63);
+//	int sgbmWinSize = SADWindowSize > 0 ? SADWindowSize : 5;
+//    sgbm->setBlockSize(sgbmWinSize);
+//
+//    int cn = img_object_1.channels();
+//	int numberOfDisparities = 64;
+//    sgbm->setP1(8*cn*sgbmWinSize*sgbmWinSize);
+//    sgbm->setP2(32*cn*sgbmWinSize*sgbmWinSize);
+//    sgbm->setMinDisparity(0);
+//    sgbm->setNumDisparities(numberOfDisparities);
+//    sgbm->setUniquenessRatio(10);
+//    sgbm->setSpeckleWindowSize(100);
+//    sgbm->setSpeckleRange(32);
+//    sgbm->setDisp12MaxDiff(1);
+//
+//	sgbm->setMode(StereoSGBM::MODE_SGBM);
+//
+//     int64 t1 = getTickCount();
+//	sgbm->compute(img_object_1, img_object_2, disp);
+//	t1 = getTickCount() - t1;
+//    printf("Time elapsed: %fms\n", t1*1000/getTickFrequency());
+//
+//	disp.convertTo(disp8, CV_8U, 255/(numberOfDisparities*16.));
+//    
+//	namedWindow("left", 1);
+//	imshow("left", img_object_1);
+//	namedWindow("right", 1);
+//	imshow("right", img_object_2);
+//	namedWindow("disparity", 0);
+//	imshow("disparity", disp8);
+//	printf("press any key to continue...");
+//	fflush(stdout);
+//	waitKey();
+//	printf("\n");
+//
+//        printf("storing the point cloud...");
+//        fflush(stdout);
+//        Mat xyz;
+//        reprojectImageTo3D(disp, xyz, Q, true);
+//        saveXYZ("point_cloud.xyz", xyz);
+//        printf("\n");
 
 
 
