@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     Mat descriptors_object_1, descriptors_object_2;
 
     FlannBasedMatcher matcher;
-    std::vector<DMatch> matches;
+    std::vector<DMatch> matches, gm;
 
     double camdata[3][3] = { { 535.4, 0, 320.1 }, { 0, 539.2, 247.6 }, { 0, 0, 1 } };
     Mat IntCamMat = Mat(3, 3, CV_64F, camdata);
@@ -109,14 +109,25 @@ int main(int argc, char** argv)
 
 		//-- Localize the object
 		std::vector<Point2f> object_1, object_2;
+		std::vector<DMatch> gm1, gm2;
 
 		for (unsigned int i = 0; i < good_matches.size(); i++) {
 			//-- Get the keypoints from the good matches
 			object_1.push_back(keypoints_object_1[good_matches[i].queryIdx].pt);
+			gm1.push_back(good_matches[i]);
 			object_2.push_back(keypoints_object_2[good_matches[i].trainIdx].pt);
+			gm2.push_back(good_matches[i]);
 		}
 		
 		Mat E, R, t, masks;
+		
+		//-- Draw matches
+		Mat img_matches;
+		drawMatches( img_object_1, keypoints_object_1, img_object_2, keypoints_object_2, good_matches, img_matches );
+		//-- Show detected matches
+		namedWindow( "Matches", CV_WINDOW_NORMAL );
+		imshow("Matches", img_matches );
+		waitKey(0);
  		
  		
 		E = findEssentialMat(object_1, object_2, 537, Point2f(320.1, 247.6), RANSAC, 0.999, 1.0, masks);
@@ -136,6 +147,7 @@ int main(int argc, char** argv)
 		
 		descriptors_object_1 = descriptors_object_2;
 		keypoints_object_1 = keypoints_object_2;
+		img_object_1 = img_object_2;	//only for visualization remove otherwise.
     }
     waitKey(0);
     return 0;
