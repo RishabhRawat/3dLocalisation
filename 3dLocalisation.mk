@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=spike
-Date                   :=30/09/15
+Date                   :=03/10/15
 CodeLitePath           :="/home/spike/.codelite"
 LinkerName             :=/usr/bin/g++-4.9
 SharedObjectLinkerName :=/usr/bin/g++-4.9 -shared -fPIC
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/src_3ddepthmap.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) 
 
 
 
