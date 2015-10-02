@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_3ddepthmap.cpp$(ObjectSuffix) 
 
 
 
