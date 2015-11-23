@@ -24,17 +24,20 @@
     <File Name="src/3ddepthmap.cpp" ExcludeProjConfig="Debug"/>
     <File Name="src/shader.h"/>
     <File Name="src/shader.cpp"/>
-    <File Name="src/shadertest.cpp" ExcludeProjConfig="Debug"/>
     <File Name="Debug/shader.frag"/>
     <File Name="Debug/shader.vert"/>
-    <File Name="src/3dtextureTest.cpp" ExcludeProjConfig="Debug"/>
-    <File Name="src/modernshadertest.cpp" ExcludeProjConfig="Debug"/>
     <File Name="src/GLutil.h"/>
     <File Name="src/GLutil.cpp"/>
     <File Name="src/Common.h"/>
-    <File Name="src/Main.cpp" ExcludeProjConfig=""/>
+    <File Name="src/Main.cpp" ExcludeProjConfig="Debug"/>
     <File Name="src/voxelOperations.h"/>
     <File Name="src/voxelOperations.cpp"/>
+    <VirtualDirectory Name="FunctionTests">
+      <File Name="src/modernshadertest.cpp"/>
+      <File Name="src/3dtextureTest.cpp"/>
+      <File Name="src/shadertest.cpp"/>
+      <File Name="src/FunctionTests/machingCubesTest.cpp"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
