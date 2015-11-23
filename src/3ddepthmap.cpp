@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 	Mat x = Mat::zeros(3, 1, CV_64F);
 	Mat y;
 	
-    Mat img_object_1 = imread(string(argv[1])+FileList[0], CV_LOAD_IMAGE_GRAYSCALE);
+    Mat img_object_1 = imread(string(argv[1])+FileList[1], CV_LOAD_IMAGE_GRAYSCALE);
     detector->detect(img_object_1, keypoints_object_1);
     extractor->compute(img_object_1, keypoints_object_1, descriptors_object_1);
 	namedWindow( "MyImage", WINDOW_AUTOSIZE );
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 	
 	Mat plot(640, 480, CV_8UC3, Scalar(0,0,0));
 
-	Mat img_object_2 = imread(string(argv[1])+FileList[1], CV_LOAD_IMAGE_GRAYSCALE);
+	Mat img_object_2 = imread(string(argv[1])+FileList[0], CV_LOAD_IMAGE_GRAYSCALE);
 	imshow("MyImage",img_object_2);
 	waitKey(13);
 	if (!img_object_1.data || !img_object_2.data) {
