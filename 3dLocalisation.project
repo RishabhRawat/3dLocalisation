@@ -33,10 +33,11 @@
     <File Name="src/voxelOperations.h"/>
     <File Name="src/voxelOperations.cpp"/>
     <VirtualDirectory Name="FunctionTests">
-      <File Name="src/modernshadertest.cpp"/>
-      <File Name="src/3dtextureTest.cpp"/>
-      <File Name="src/shadertest.cpp"/>
-      <File Name="src/FunctionTests/machingCubesTest.cpp"/>
+      <File Name="src/modernshadertest.cpp" ExcludeProjConfig="Debug"/>
+      <File Name="src/3dtextureTest.cpp" ExcludeProjConfig="Debug"/>
+      <File Name="src/shadertest.cpp" ExcludeProjConfig="Debug"/>
+      <File Name="src/FunctionTests/machingCubesTest.cpp" ExcludeProjConfig="Debug"/>
+      <File Name="src/FunctionTests/mouseMove.cpp"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">

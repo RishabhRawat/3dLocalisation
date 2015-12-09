@@ -9,7 +9,7 @@ using namespace std;
 static char* textFileRead(const char *fileName) {
 	char* text;
     
-	if (fileName != NULL) {
+	if (fileName) {
         FILE *file = fopen(fileName, "rt");
         
 		if (file != NULL) {
@@ -37,27 +37,74 @@ Shader::Shader(const char *vsFile, const char *fsFile) {
 }
 
 void Shader::init(const char *vsFile, const char *fsFile) {
-	shader_vp = glCreateShader(GL_VERTEX_SHADER);
-	shader_fp = glCreateShader(GL_FRAGMENT_SHADER);
-    
-	const char* vsText = textFileRead(vsFile);
-	const char* fsText = textFileRead(fsFile);
-    
-    if (vsText == NULL || fsText == NULL) {
-        cout << "Either vertex shader or fragment shader file not found." << endl;
-        return;
-    }
-    
-	glShaderSource(shader_vp, 1, &vsText, 0);
-	glShaderSource(shader_fp, 1, &fsText, 0);
-    
-	CompileShader(shader_vp);
-	CompileShader(shader_fp);
-	
+	shader_vp = addShader(vsFile,GL_VERTEX_SHADER);
+	shader_fp = addShader(fsFile,GL_FRAGMENT_SHADER);
+
 	shader_id = glCreateProgram();
 	glAttachShader(shader_id, shader_fp);
 	glAttachShader(shader_id, shader_vp);
 	glLinkProgram(shader_id);
+}
+
+void Shader::init(const char *vsFile, const char *fsFile, const char *gsFile) {
+	shader_vp = addShader(vsFile,GL_VERTEX_SHADER);
+	shader_fp = addShader(fsFile,GL_FRAGMENT_SHADER);
+	shader_gp = addShader(gsFile,GL_GEOMETRY_SHADER);
+
+	shader_id = glCreateProgram();
+	glAttachShader(shader_id, shader_fp);
+	glAttachShader(shader_id, shader_gp);
+	glAttachShader(shader_id, shader_vp);
+	glLinkProgram(shader_id);
+}
+
+void Shader::init(const char *vsText, const char *fsText, int textFlag) {
+	shader_vp = addShaderfromText(vsText,GL_VERTEX_SHADER);
+	shader_fp = addShaderfromText(fsText,GL_FRAGMENT_SHADER);
+
+	shader_id = glCreateProgram();
+	glAttachShader(shader_id, shader_fp);
+	glAttachShader(shader_id, shader_vp);
+	glLinkProgram(shader_id);
+}
+
+void Shader::init(const char *vsText, const char *fsText, const char *gsText, int textFlag) {
+	shader_vp = addShaderfromText(vsText,GL_VERTEX_SHADER);
+	shader_gp = addShaderfromText(gsText,GL_GEOMETRY_SHADER);
+	shader_fp = addShaderfromText(fsText,GL_FRAGMENT_SHADER);
+
+	shader_id = glCreateProgram();
+	glAttachShader(shader_id, shader_fp);
+	glAttachShader(shader_id, shader_gp);
+	glAttachShader(shader_id, shader_vp);
+	glLinkProgram(shader_id);
+}
+
+unsigned int Shader::addShader(const char * shaderFileName, GLenum shaderType)
+{
+	unsigned int shader = glCreateShader(shaderType);
+	const char* Text = textFileRead(shaderFileName);
+	if (!shader) {
+        cout << "Shader file not found." << endl;
+        exit(-1);
+		return 9999;
+    }
+	glShaderSource(shader, 1, &Text, 0);
+	Shader::CompileShader(shader);
+	return shader;
+}
+
+unsigned int Shader::addShaderfromText(const char * Text, GLenum shaderType)
+{
+	unsigned int shader = glCreateShader(shaderType);
+	if (!shader) {
+        cout << "Shader file not found." << endl;
+        exit(-1);
+		return 9999;
+    }
+	glShaderSource(shader, 1, &Text, 0);
+	Shader::CompileShader(shader);
+	return shader;
 }
 
 Shader::~Shader() {
