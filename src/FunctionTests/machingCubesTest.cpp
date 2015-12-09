@@ -1,19 +1,26 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <iostream>
-#include "GLutil.h"
-#include "voxelOperations.h"
+#include "../GLutil.h"
+#include "../voxelOperations.h"
 #define VOXEL_INTERNAL_FORMAT GL_RGBA
 
 using namespace cv;
 Shader shader;
 
 
-Mat image;
-GLuint texID[2];
-GLuint ping;
 
-GLuint FramebufferName[2];
+GLfloat viewMat [16] =
+{
+0.5f, 0.0f, 0.0f, 0.0f,
+0.0f, 0.5f, 0.0f, 0.0f,
+0.0f, 0.0f, 0.5f, 0.0f,
+0.2f, 0.2f, 0.0f, 1.0f 		// X Y Z 1	 culled from -1 to 1
+};
+
+Mat image;
+GLuint texID[1];
+
 GLuint gVAO, gVBO;
 
 void createSquare(void) {  
@@ -26,11 +33,16 @@ glGenVertexArrays(1, &gVAO);
 
     // Put the three triangle verticies into the VBO
     GLfloat vertexData[] = {
-        //  X     Y     Z     U     V
-         -1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-         -1.0f,1.0f, 0.0f,  0.0f, 1.0f,
-         1.0f,-1.0f, 0.0f,  1.0f, 0.0f,
-         1.0f,1.0f, 0.0f,  1.0f, 1.0f,
+		//X		Y		Z		S	T		P
+		-1.0f, -1.0f, -1.0f,  0.0f, 0.0f, 0.0f,
+		-1.0f,  1.0f, -1.0f,  0.0f, 1.0f, 0.0f,
+		 1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,
+		 1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
+		-1.0f, -1.0f,  1.0f,  0.0f, 0.0f, 1.0f,
+		-1.0f,  1.0f,  1.0f,  0.0f, 1.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
+		 1.0f,  1.0f,  1.0f,  1.0f, 1.0f, 1.0f
+
 
     };
 	
@@ -38,10 +50,10 @@ glGenVertexArrays(1, &gVAO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
    
 	glEnableVertexAttribArray(shader.shaderAttrib("Vertex"));
-    glVertexAttribPointer(shader.shaderAttrib("Vertex"), 3, GL_FLOAT, GL_FALSE,5*sizeof(GLfloat), NULL);
+    glVertexAttribPointer(shader.shaderAttrib("Vertex"), 3, GL_FLOAT, GL_FALSE,6*sizeof(GLfloat), NULL);
 
 	glEnableVertexAttribArray(shader.shaderAttrib("vertTexCoord"));
-	glVertexAttribPointer(shader.shaderAttrib("vertTexCoord"), 2, GL_FLOAT, GL_TRUE, 5*sizeof(GLfloat),(const GLvoid*)(3*sizeof(GLfloat)));
+	glVertexAttribPointer(shader.shaderAttrib("vertTexCoord"), 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat),(const GLvoid*)(3*sizeof(GLfloat)));
     
 
     // unbind the VBO and VAO
@@ -54,15 +66,6 @@ void init(void) {
 	//shader = new Shader();
 	//PING PONG BUFFERS
 	texID[0] = utilCreate3DVoxel(VOXELNUM); 
-	texID[1] = utilCreate3DVoxel(VOXELNUM);
-	glGenFramebuffers(2, FramebufferName);
-	ping = 1;
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName[0]);
-	glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, texID[0], 0, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName[1]);
-	glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, texID[1], 0, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	shader.init("shader.vert", "shader.frag");
 	createSquare();	
@@ -73,11 +76,28 @@ void display (void) {
 	
 	glClearColor (0.0,0.0,0.0,1.0);
 	glClear (GL_COLOR_BUFFER_BIT);
-	std::cout<<"going to write in: "<<1-ping<<std::endl;
-	updateVoxel(FramebufferName[1-ping],gVAO,texID[ping]);
-	utilCheckGLError("display");
+
+//glViewport(0,0,VOXELNUM,VOXELNUM);	
+	shader.bind();
+	
+	
+	glActiveTexture(GL_TEXTURE0 + 0);
+	glBindTexture(GL_TEXTURE_3D, texID[0]);
+	
+	glUniform1i(shader.shaderUniform("my_color_texture"), 0);
+	glUniformMatrix4fv(shader.shaderUniform("Transform"),1,GL_FALSE,viewMat);
+	
+	glBindVertexArray(gVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0); // Unbind our Vertex Array Object
+	utilCheckGLError("3");
+
+	
+	shader.unbind();
+
+
 	glutSwapBuffers();
-	ping = 1-ping;
+
 }
 
 void reshape (int width, int height) {

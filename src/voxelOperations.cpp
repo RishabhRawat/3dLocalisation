@@ -5,7 +5,7 @@
 
 GLuint utilCreate3DVoxel(int size)
 {
-	std::vector<GLubyte> InitialData(size*size*size*4, 3);
+	std::vector<GLubyte> InitialData(size*size*size*4, 255);
 	
 	GLuint texID;
 	glGenTextures(1, &texID);
