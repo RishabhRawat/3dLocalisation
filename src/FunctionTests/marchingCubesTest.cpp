@@ -81,31 +81,18 @@ void init(void)
 	
 	std::vector<GLubyte> InitialData(VOXELNUM*VOXELNUM*VOXELNUM*4, 0);
 	
-	InitialData[(16+1)*4] = 1.0f;
-	InitialData[(16+2)*4] = 1.0f;
-	InitialData[(16+4)*4] = 1.0f;
+	
 	InitialData[(16+5)*4] = 1.0f;
 	InitialData[(16+6)*4] = 1.0f;
-	InitialData[(16+7)*4] = 1.0f;
-	InitialData[(16+8)*4] = 1.0f;
+	
 	InitialData[(16+9)*4] = 1.0f;
 	InitialData[(16+10)*4] = 1.0f;
-	InitialData[(16+11)*4] = 1.0f;
-	InitialData[(16+13)*4] = 1.0f;
-	InitialData[(16+14)*4] = 1.0f;
 	
-	InitialData[(16*2+1)*4] = 1.0f;
-	InitialData[(16*2+2)*4] = 1.0f;
-	InitialData[(16*2+4)*4] = 1.0f;
 	InitialData[(16*2+5)*4] = 1.0f;
 	InitialData[(16*2+6)*4] = 1.0f;
-	InitialData[(16*2+7)*4] = 1.0f;
-	InitialData[(16*2+8)*4] = 1.0f;
+	
 	InitialData[(16*2+9)*4] = 1.0f;
 	InitialData[(16*2+10)*4] = 1.0f;
-	InitialData[(16*2+11)*4] = 1.0f;
-	InitialData[(16*2+13)*4] = 1.0f;
-	InitialData[(16*2+14)*4] = 1.0f;
 	
     texID[0] = utilCreate3DVoxelFromData(VOXELNUM,InitialData);
     const char* Vshader = "#version 330 \n in vec3 Vertex;\nvoid "
