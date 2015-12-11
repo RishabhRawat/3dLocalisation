@@ -1,34 +1,38 @@
+#version 440
 layout(points) in;
-layout(points, max_vertices = 1) out;
+layout(TRIANGLE_STRIP, max_vertices = 3) out;
 uniform mat4 Transform;
 uniform sampler3D my_data_texture;
 
-vec3 lookupVertex(int id)
+vec4 lookupVertex(int id)
 {
 	switch(id)
 	{
-	case 0: return vec(0.5f,0.0f,0.0f);
-	case 1: return vec(1.0f,0.5f,0.0f);
-	case 2: return vec(0.5f,1.0f,0.0f);
-	case 3: return vec(0.0f,0.5f,0.0f);
+	case 0: return vec4(0.5f,0.0f,0.0f,1.0f);
+	case 1: return vec4(1.0f,0.5f,0.0f,1.0f);
+	case 2: return vec4(0.5f,1.0f,0.0f,1.0f);
+	case 3: return vec4(0.0f,0.5f,0.0f,1.0f);
 
-	case 4: return vec(0.5f,0.0f,1.0f);
-	case 5: return vec(1.0f,0.5f,1.0f);
-	case 6: return vec(0.5f,1.0f,1.0f);
-	case 7: return vec(0.0f,0.5f,1.0f);
+	case 4: return vec4(0.5f,0.0f,1.0f,1.0f);
+	case 5: return vec4(1.0f,0.5f,1.0f,1.0f);
+	case 6: return vec4(0.5f,1.0f,1.0f,1.0f);
+	case 7: return vec4(0.0f,0.5f,1.0f,1.0f);
 
-	case 8: return vec(0.0f,0.0f,0.5f);
-	case 9: return vec(1.0f,0.0f,0.5f);
-	case 10: return vec(1.0f,1.0f,0.5f);
-	case 11: return vec(0.0f,1.0f,0.5f);
+	case 8: return vec4(0.0f,0.0f,0.5f,1.0f);
+	case 9: return vec4(1.0f,0.0f,0.5f,1.0f);
+	case 10: return vec4(1.0f,1.0f,0.5f,1.0f);
+	case 11: return vec4(0.0f,1.0f,0.5f,1.0f);
 	}
-	return vec(0.0f,0.0f,0.0f);
+	return vec4(0.0f,0.0f,0.0f,1.0f);
 }
 
 
 void main()
 {
 	bool v[8];
+	int cubeindex = 0;
+	
+	/*
 	v[0] = (texture(my_data_texture,gl_in[0].gl_Position/4+vec3(0.0f, 0.0f, 0.0f)).r != 0);
 	v[1] = (texture(my_data_texture,gl_in[0].gl_Position/4+vec3(1.0f/4, 0.0f, 0.0f)).r != 0);
 	v[3] = (texture(my_data_texture,gl_in[0].gl_Position/4+vec3(0.0f, 1.0f/4, 0.0f)).r != 0);
@@ -40,7 +44,19 @@ void main()
 	v[6] = (texture(my_data_texture,gl_in[0].gl_Position/4+vec3(1.0f/4, 1.0f/4, 1.0f/4)).r != 0);
 
 	int cubeindex = (v[7]<<7) | (v[6]<<6) | (v[5]<<5) | (v[4]<<4) | (v[3]<<3) | (v[2]<<2) | (v[1]<<1) | (v[0]);
+	*/
+	
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(0.0f, 0.0f, 0.0f, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 1;
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(1.0f/4, 0.0f, 0.0f, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 2;
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(1.0f/4, 1.0f/4, 0.0f, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 4;
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(0.0f, 1.0f/4, 0.0f, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 8;
 
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(0.0f, 0.0f, 1.0f/4, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 16;
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(1.0f/4, 0.0f, 0.0f, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 32;
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(1.0f/4, 1.0f/4, 1.0f/4, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 64;
+	if(texture(my_data_texture,(gl_in[0].gl_Position/4+vec4(0.0f, 1.0f/4 ,0.0f, 0.0f)).rgb).r != 0) cubeindex = cubeindex  + 127;
+	
+	
 	int triTable[256][16] =
 	{{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 	{0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -299,53 +315,53 @@ void main()
 	{0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
 
-	if(triTable[0] != -1)
+	if(triTable[cubeindex][0] != -1)
 	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[0]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][0]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[1]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][1]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[2]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][2]));
 		EmitVertex();
 		EndPrimitive();
 	}
-	if(triTable[3] != -1)
+	if(triTable[cubeindex][3] != -1)
 	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[3]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][3]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[4]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][4]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[5]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][5]));
 		EmitVertex();
 		EndPrimitive();
 	}
-	if(triTable[6] != -1)
+	if(triTable[cubeindex][6] != -1)
 	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[6]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][6]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[7]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][7]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[8]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][8]));
 		EmitVertex();
 		EndPrimitive();
 	}
-	if(triTable[9] != -1)
+	if(triTable[cubeindex][9] != -1)
 	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[9]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][9]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[10]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][10]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[11]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][11]));
 		EmitVertex();
 		EndPrimitive();
 	}
-	if(triTable[12] != -1)
+	if(triTable[cubeindex][12] != -1)
 	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[12]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][12]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[13]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][13]));
 		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[14]));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(triTable[cubeindex][14]));
 		EmitVertex();
 		EndPrimitive();
 	}

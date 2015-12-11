@@ -10,6 +10,8 @@
 
 #include <string>
 
+char* textFileRead(const char *fileName);
+
 class Shader {
 	public:
 		Shader();
@@ -31,7 +33,7 @@ class Shader {
 
 		unsigned int id();
 
-	private:
+	public:
 		unsigned int shader_id;
 		unsigned int shader_vp;
 		unsigned int shader_fp;
