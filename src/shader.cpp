@@ -6,7 +6,7 @@
 
 using namespace std;
 
-static char* textFileRead(const char *fileName) {
+char* textFileRead(const char *fileName) {
 	char* text;
     
 	if (fileName) {
