@@ -5,16 +5,16 @@
 ## Debug
 ProjectName            :=3dLocalisation
 ConfigurationName      :=Debug
-WorkspacePath          := "/home/spike/Workspace/Codelite"
-ProjectPath            := "/home/spike/Workspace/Codelite/3dLocalisation"
+WorkspacePath          := "/home/rude/Desktop/Codelite"
+ProjectPath            := "/home/rude/Desktop/Codelite/3dLocalisation"
 IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=spike
-Date                   :=03/10/15
-CodeLitePath           :="/home/spike/.codelite"
+User                   :=rude
+Date                   :=09/12/15
+CodeLitePath           :="/home/rude/.codelite"
 LinkerName             :=/usr/bin/g++-4.9
 SharedObjectLinkerName :=/usr/bin/g++-4.9 -shared -fPIC
 ObjectSuffix           :=.o
@@ -35,12 +35,12 @@ PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="3dLocalisation.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  `pkg-config --libs  opencv`
+LinkOptions            :=  `pkg-config --libs  opencv glew`
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)/usr/local/include/opencv $(IncludeSwitch)-I/usr/local/include 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := 
-ArLibs                 :=  
+Libs                   := $(LibrarySwitch)glut 
+ArLibs                 :=  "glut" 
 LibPath                := $(LibraryPathSwitch). 
 
 ##
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_GLutil.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_voxelOperations.cpp$(ObjectSuffix) $(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix) 
 
 
 
@@ -78,6 +78,13 @@ $(OutputFile): $(IntermediateDirectory)/.d $(Objects)
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
 
+PostBuild:
+	@echo Executing Post Build commands ...
+	ln -sf ../src/shader.frag Debug/shader.frag
+	ln -sf ../src/shader.vert Debug/shader.vert
+	ln -sf ../src/bb.jpg Debug/bb.jpg
+	@echo Done
+
 MakeIntermediateDirs:
 	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
@@ -91,13 +98,37 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix): src/main.cpp $(IntermediateDirectory)/src_main.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/spike/Workspace/Codelite/3dLocalisation/src/main.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_main.cpp$(DependSuffix): src/main.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_main.cpp$(DependSuffix) -MM "src/main.cpp"
+$(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix): src/shader.cpp $(IntermediateDirectory)/src_shader.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/rude/Desktop/Codelite/3dLocalisation/src/shader.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_shader.cpp$(DependSuffix): src/shader.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_shader.cpp$(DependSuffix) -MM "src/shader.cpp"
 
-$(IntermediateDirectory)/src_main.cpp$(PreprocessSuffix): src/main.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_main.cpp$(PreprocessSuffix) "src/main.cpp"
+$(IntermediateDirectory)/src_shader.cpp$(PreprocessSuffix): src/shader.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_shader.cpp$(PreprocessSuffix) "src/shader.cpp"
+
+$(IntermediateDirectory)/src_GLutil.cpp$(ObjectSuffix): src/GLutil.cpp $(IntermediateDirectory)/src_GLutil.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/rude/Desktop/Codelite/3dLocalisation/src/GLutil.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_GLutil.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_GLutil.cpp$(DependSuffix): src/GLutil.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_GLutil.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_GLutil.cpp$(DependSuffix) -MM "src/GLutil.cpp"
+
+$(IntermediateDirectory)/src_GLutil.cpp$(PreprocessSuffix): src/GLutil.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_GLutil.cpp$(PreprocessSuffix) "src/GLutil.cpp"
+
+$(IntermediateDirectory)/src_voxelOperations.cpp$(ObjectSuffix): src/voxelOperations.cpp $(IntermediateDirectory)/src_voxelOperations.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/rude/Desktop/Codelite/3dLocalisation/src/voxelOperations.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_voxelOperations.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_voxelOperations.cpp$(DependSuffix): src/voxelOperations.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_voxelOperations.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_voxelOperations.cpp$(DependSuffix) -MM "src/voxelOperations.cpp"
+
+$(IntermediateDirectory)/src_voxelOperations.cpp$(PreprocessSuffix): src/voxelOperations.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_voxelOperations.cpp$(PreprocessSuffix) "src/voxelOperations.cpp"
+
+$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix): src/FunctionTests/mouseMove.cpp $(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/rude/Desktop/Codelite/3dLocalisation/src/FunctionTests/mouseMove.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(DependSuffix): src/FunctionTests/mouseMove.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(DependSuffix) -MM "src/FunctionTests/mouseMove.cpp"
+
+$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(PreprocessSuffix): src/FunctionTests/mouseMove.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(PreprocessSuffix) "src/FunctionTests/mouseMove.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
