@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=rude
-Date                   :=09/12/15
+Date                   :=11/12/15
 CodeLitePath           :="/home/rude/.codelite"
 LinkerName             :=/usr/bin/g++-4.9
 SharedObjectLinkerName :=/usr/bin/g++-4.9 -shared -fPIC
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_GLutil.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_voxelOperations.cpp$(ObjectSuffix) $(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_GLutil.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_voxelOperations.cpp$(ObjectSuffix) $(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(ObjectSuffix) 
 
 
 
@@ -83,6 +83,7 @@ PostBuild:
 	ln -sf ../src/shader.frag Debug/shader.frag
 	ln -sf ../src/shader.vert Debug/shader.vert
 	ln -sf ../src/bb.jpg Debug/bb.jpg
+	ln -sf ../src/simpleG.geo Debug/simpleG.geo
 	@echo Done
 
 MakeIntermediateDirs:
@@ -122,13 +123,13 @@ $(IntermediateDirectory)/src_voxelOperations.cpp$(DependSuffix): src/voxelOperat
 $(IntermediateDirectory)/src_voxelOperations.cpp$(PreprocessSuffix): src/voxelOperations.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_voxelOperations.cpp$(PreprocessSuffix) "src/voxelOperations.cpp"
 
-$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix): src/FunctionTests/mouseMove.cpp $(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/rude/Desktop/Codelite/3dLocalisation/src/FunctionTests/mouseMove.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(DependSuffix): src/FunctionTests/mouseMove.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(DependSuffix) -MM "src/FunctionTests/mouseMove.cpp"
+$(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(ObjectSuffix): src/FunctionTests/marchingCubesTest.cpp $(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/rude/Desktop/Codelite/3dLocalisation/src/FunctionTests/marchingCubesTest.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(DependSuffix): src/FunctionTests/marchingCubesTest.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(DependSuffix) -MM "src/FunctionTests/marchingCubesTest.cpp"
 
-$(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(PreprocessSuffix): src/FunctionTests/mouseMove.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FunctionTests_mouseMove.cpp$(PreprocessSuffix) "src/FunctionTests/mouseMove.cpp"
+$(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(PreprocessSuffix): src/FunctionTests/marchingCubesTest.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FunctionTests_marchingCubesTest.cpp$(PreprocessSuffix) "src/FunctionTests/marchingCubesTest.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

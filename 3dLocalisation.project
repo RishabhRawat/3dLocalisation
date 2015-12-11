@@ -31,14 +31,16 @@
     <File Name="src/Common.h"/>
     <File Name="src/Main.cpp" ExcludeProjConfig="Debug"/>
     <File Name="src/voxelOperations.h"/>
-    <File Name="src/voxelOperations.cpp"/>
+    <File Name="src/voxelOperations.cpp" ExcludeProjConfig=""/>
     <VirtualDirectory Name="FunctionTests">
       <File Name="src/modernshadertest.cpp" ExcludeProjConfig="Debug"/>
       <File Name="src/3dtextureTest.cpp" ExcludeProjConfig="Debug"/>
       <File Name="src/shadertest.cpp" ExcludeProjConfig="Debug"/>
-      <File Name="src/FunctionTests/machingCubesTest.cpp" ExcludeProjConfig="Debug"/>
-      <File Name="src/FunctionTests/mouseMove.cpp"/>
+      <File Name="src/FunctionTests/mouseMove.cpp" ExcludeProjConfig="Debug"/>
+      <File Name="src/FunctionTests/geometryShaderTest.cpp" ExcludeProjConfig="Debug"/>
+      <File Name="src/FunctionTests/marchingCubesTest.cpp" ExcludeProjConfig=""/>
     </VirtualDirectory>
+    <File Name="src/simpleG.geo"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -74,6 +76,7 @@
         <Command Enabled="yes">ln -sf ../src/shader.frag Debug/shader.frag</Command>
         <Command Enabled="yes">ln -sf ../src/shader.vert Debug/shader.vert</Command>
         <Command Enabled="yes">ln -sf ../src/bb.jpg Debug/bb.jpg</Command>
+        <Command Enabled="yes">ln -sf ../src/simpleG.geo Debug/simpleG.geo</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>

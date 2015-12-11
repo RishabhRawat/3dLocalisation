@@ -136,14 +136,12 @@ void mouseHandler(int button, int state, int x, int y)
 		float dy = y-oldy;
 		if(dx*dy == 0)
 			return;
-		std::cout<< sqrt(dx*dx+dy*dy)<<std::endl;
 		Model = glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 		drag = 0;
     } else { // normal button event
 		printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
     }
     MVP = Projection * View * Model;
-	std::cout<<glm::to_string(MVP)<<std::endl<<std::endl;
 }
 void dragHandler(int x, int y)
 {
@@ -153,8 +151,7 @@ void dragHandler(int x, int y)
 		float dy = y-oldy;
 		if(dx*dy == 0)
 			return;
-		std::cout<< sqrt(dx*dx+dy*dy)<<std::endl;
-	    MVP = Projection * View * glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
+		MVP = Projection * View * glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 	}
 }
 int main(int argc, char** argv)
