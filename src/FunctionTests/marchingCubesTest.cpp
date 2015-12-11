@@ -3,6 +3,7 @@
 #include <iostream>
 #include "../GLutil.h"
 #include "../voxelOperations.h"
+#include "../marchingCubes.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -20,6 +21,7 @@ glm::mat4 Projection, View, Model;
 
 Mat image;
 GLuint texID[1];
+GLuint lookupTableTexture;
 
 GLuint gVAO, gVBO;
 
@@ -38,9 +40,9 @@ void createSquare(void)
     for (unsigned int z = 0; z < 3; z++) {
 		for (unsigned int y = 0; y < 3; y++) {
 			for (unsigned int x = 0; x < 3; x++) {
-				vertexData[(x+4*y+z*16)*3] = (float)x;
-				vertexData[(x+4*y+z*16)*3+1] = (float)y;
-				vertexData[(x+4*y+z*16)*3+2] = (float)z;
+				vertexData[(x+3*y+z*9)*3] = (float)x;
+				vertexData[(x+3*y+z*9)*3+1] = (float)y;
+				vertexData[(x+3*y+z*9)*3+2] = (float)z;
 			}
 		}
     }
@@ -63,6 +65,20 @@ void init(void)
 {
     // shader = new Shader();
 	//assuming VOXELNUM = 4
+	
+	glGenTextures(1, &lookupTableTexture);
+	glBindTexture(GL_TEXTURE_2D, lookupTableTexture);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8I, 256, 16, 0,  GL_RED_INTEGER, GL_BYTE, &triTable[0][0]);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	
+	
 	std::vector<GLubyte> InitialData(VOXELNUM*VOXELNUM*VOXELNUM*4, 0);
 	
 	InitialData[(16+1)*4] = 1.0f;
@@ -95,11 +111,10 @@ void init(void)
     const char* Vshader = "#version 330 \n in vec3 Vertex;\nvoid "
                           "main() {	\n	gl_Position = vec4(Vertex,1.0);\n}";
     const char* Gshader = textFileRead("simpleG.geo");
-	const char* Fshader = "#version 330 \n uniform sampler3D my_color_texture;\n out vec4 out_Color;\n    void "
-                          "main()\n    {\n	out_Color = vec4(1.0f,1.0f,1.0f,1.0f);\n    }\n";
+	const char* Fshader = "#version 330 \n uniform sampler3D my_color_texture;\n in vec4 fragColor;\n out vec4 out_Color;\n    void "
+                          "main()\n    {\n	out_Color = fragColor;\n    }\n";
     shader.init(Vshader, Fshader, Gshader, 0);
-    createSquare();
-	std::cout<<"initCOmplete"<<std::endl;
+	createSquare();
 }
 
 void display(void)
@@ -107,19 +122,18 @@ void display(void)
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
-	std::cout<<"initCOmplete"<<std::endl;
     // glViewport(0,0,VOXELNUM,VOXELNUM);
     shader.bind();
-	std::cout<<"initCOmplete"<<std::endl;
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_3D, texID[0]);
 
     glUniform1i(shader.shaderUniform("my_color_texture"), 0);
     glUniform1i(shader.shaderUniform("my_data_texture"), 0);
+	glBindTexture(GL_TEXTURE_2D, lookupTableTexture);
+	glUniform1i(shader.shaderUniform("lookupTableTexture"), 0);
     glUniformMatrix4fv(shader.shaderUniform("Transform"), 1, GL_FALSE, glm::value_ptr(MVP));
-	std::cout<<"initCOmplete"<<std::endl;
     glBindVertexArray(gVAO);
-    glDrawArrays(GL_POINTS, 0, 64);
+    glDrawArrays(GL_POINTS, 0, 27);
     glBindVertexArray(0); // Unbind our Vertex Array Object
     utilCheckGLError("3");
 
@@ -222,3 +236,4 @@ int main(int argc, char** argv)
 
     return 0;
 }
+

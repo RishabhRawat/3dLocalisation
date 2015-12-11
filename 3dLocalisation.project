@@ -38,9 +38,10 @@
       <File Name="src/shadertest.cpp" ExcludeProjConfig="Debug"/>
       <File Name="src/FunctionTests/mouseMove.cpp" ExcludeProjConfig="Debug"/>
       <File Name="src/FunctionTests/geometryShaderTest.cpp" ExcludeProjConfig="Debug"/>
-      <File Name="src/FunctionTests/marchingCubesTest.cpp" ExcludeProjConfig=""/>
+      <File Name="src/FunctionTests/marchingCubesTest.cpp"/>
     </VirtualDirectory>
     <File Name="src/simpleG.geo"/>
+    <File Name="src/marchingCubes.h"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -58,7 +59,7 @@
         <IncludePath Value="/usr/local/include/opencv"/>
         <IncludePath Value="-I/usr/local/include"/>
       </Compiler>
-      <Linker Options="`pkg-config --libs  opencv glew`" Required="yes">
+      <Linker Options="`pkg-config --libs  opencv glew`;-Wall;-fno-stack-protector;" Required="yes">
         <Library Value="glut"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
