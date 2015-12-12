@@ -69,7 +69,7 @@ void init(void)
 	glGenTextures(1, &lookupTableTexture);
 	glBindTexture(GL_TEXTURE_2D, lookupTableTexture);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8I, 256, 16, 0,  GL_RED_INTEGER, GL_BYTE, &triTable[0][0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8I, 16, 256, 0,  GL_RED_INTEGER, GL_BYTE, &triTable[0][0]);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
