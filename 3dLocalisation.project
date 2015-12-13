@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="3dLocalisation" InternalType="">
   <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
     <Plugin Name="CMakePlugin">
       <![CDATA[[{
   "name": "Debug",
@@ -13,26 +16,32 @@
   "parentProject": ""
  }]]]>
     </Plugin>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
   </Plugins>
+  <Reconciliation>
+    <Regexes/>
+    <Excludepaths/>
+    <Ignorefiles/>
+    <Extensions>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp]]>
+    </Extensions>
+    <Topleveldir>../3dLocalisation</Topleveldir>
+  </Reconciliation>
   <VirtualDirectory Name="src">
-    <VirtualDirectory Name="FunctionTests">
-      <File Name="src/FunctionTests/mouseMove.cpp"/>
-      <File Name="src/FunctionTests/shadertest.cpp"/>
-      <File Name="src/FunctionTests/geometryShaderTest.cpp"/>
-      <File Name="src/FunctionTests/modernshadertest.cpp"/>
-      <File Name="src/FunctionTests/marchingCubesTest.cpp"/>
-      <File Name="src/FunctionTests/3dtextureTest.cpp"/>
-    </VirtualDirectory>
     <File Name="src/shader.cpp"/>
     <File Name="src/glad.c"/>
-    <File Name="src/3ddepthmap.cpp"/>
     <File Name="src/voxelOperations.cpp"/>
     <File Name="src/GLutil.cpp"/>
-    <File Name="src/Main.cpp"/>
-    <File Name="src/3dlocalisation.cpp"/>
+    <VirtualDirectory Name="Tests">
+      <File Name="src/Tests/mouseMove.cpp"/>
+      <File Name="src/Tests/shadertest.cpp"/>
+      <File Name="src/Tests/geometryShaderTest.cpp"/>
+      <File Name="src/Tests/Main.cpp"/>
+      <File Name="src/Tests/modernshadertest.cpp"/>
+      <File Name="src/Tests/marchingCubesTest.cpp"/>
+      <File Name="src/Tests/3dtextureTest.cpp"/>
+      <File Name="src/Tests/3ddepthmap.cpp"/>
+      <File Name="src/Tests/3dlocalisation.cpp"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <VirtualDirectory Name="glad">
@@ -82,14 +91,14 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="yes">
-        <RebuildCommand>make clean &amp;&amp; make -j8</RebuildCommand>
-        <CleanCommand>make clean</CleanCommand>
-        <BuildCommand>make -j8</BuildCommand>
+        <RebuildCommand>rm -rf * &amp;&amp; cmake .. -DCMAKE_BUILD_TYPE=Debig &amp;&amp; make -j8</RebuildCommand>
+        <CleanCommand>rm -rf *</CleanCommand>
+        <BuildCommand>cmake .. -DCMAKE_BUILD_TYPE=Debug &amp;&amp; make -j8</BuildCommand>
         <PreprocessFileCommand/>
         <SingleFileCommand/>
         <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory>$(WorkspacePath)</WorkingDirectory>
+        <WorkingDirectory>/home/rude/Documents/NewWorkspace/3dLocalisation/build</WorkingDirectory>
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild/>

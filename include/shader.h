@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <cstdio>
+#include "glad/glad.h"
 #define GLFW_INCLUDE_GLEXT
 #include <GLFW/glfw3.h>
 

@@ -1,9 +1,9 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <iostream>
-#include "../GLutil.h"
-#include "../voxelOperations.h"
-#include "../marchingCubes.h"
+#include "GLutil.h"
+#include "voxelOperations.h"
+#include "marchingCubes.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -130,8 +130,6 @@ void display(void)
     utilCheckGLError("3");
 
     shader.unbind();
-
-	glfwSwapBuffers(window);
 }
 
 void reshape(int width, int height)
@@ -146,7 +144,7 @@ void reshape(int width, int height)
             identityMat[0]= 1.0f;
     }*/
 }
-
+/*
 float oldx, oldy, drag;
 void mouseHandler(int button, int state, int x, int y)
 {
@@ -192,7 +190,7 @@ void dragHandler(int x, int y)
 			return;
 		MVP = Projection * View * glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 	}
-}
+}*/
 /*
 void APIENTRY openglCallbackFunction(GLenum source,
 GLenum type,
@@ -273,7 +271,7 @@ int main(int argc, char** argv)
     exit(EXIT_FAILURE);
 	
 	init();
-	glfwSetErrorCallback(error_callback);
+	glfwSetErrorCallback(glfw_error_callback);
 	
 	GLFWwindow* window = glfwCreateWindow(500, 500, "My Title", NULL, NULL);
 	
@@ -286,17 +284,17 @@ int main(int argc, char** argv)
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
-	
+	/*
     glutInit(&argc, argv);
 	glutInitContextVersion(4, 0);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
-	/*
+	/////
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG );
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(openglCallbackFunction, NULL);
 	GLuint unusedIds = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
-*/
+	////
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA); // set up the double buffering
 	
@@ -324,9 +322,11 @@ int main(int argc, char** argv)
 	exit(1);           // or handle the error in a nicer way
 
     glutMainLoop();
-	
+	*/
 	while (!glfwWindowShouldClose(window)){
 		display();
+		glfwSwapBuffers(window);
+
 	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
