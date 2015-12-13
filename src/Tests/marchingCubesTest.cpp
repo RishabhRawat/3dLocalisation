@@ -187,19 +187,6 @@ void dragHandler(int x, int y)
 		MVP = Projection * View * glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 	}
 }*/
-/*
-void APIENTRY openglCallbackFunction(GLenum source,
-GLenum type,
-GLuint id,
-GLenum severity,
-GLsizei length,
-const GLchar* message,
-void * userParam)
-{
-printf("Debug message with source 0x%04X, type 0x%04X, "
-"id %u, severity 0x%0X, '%s'\n",
-source, type, id, severity, message);
-}*/
 
 static void openglCallbackFunction(GLenum source,
                                      GLenum type,
@@ -250,9 +237,12 @@ static void openglCallbackFunction(GLenum source,
     }
     std::cout << std::endl;
     std::cout << "---------------------opengl-callback-end--------------" << std::endl;
+	exit(1);
 }
+
 void glfw_error_callback(int error, const char* description)
 {
+	std::cerr<<"sssssssssssssssssssss";
     fputs(description, stderr);
 }
 
@@ -266,7 +256,13 @@ int main(int argc, char** argv)
 	if (!glfwInit())
     exit(EXIT_FAILURE);
 	
-	init();
+	//glfwWindowHint(GLFW_CLIENT_API,GLFW_OPENGL_API);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,4);
+	
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT,GL_TRUE );
+	//glfwWindowHint(GLFW_OPENGL_PROFILE ,GLFW_OPENGL_CORE_PROFILE);
+	
 	glfwSetErrorCallback(glfw_error_callback);
 	
 	GLFWwindow* window = glfwCreateWindow(500, 500, "My Title", NULL, NULL);
@@ -280,16 +276,15 @@ int main(int argc, char** argv)
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
+	init();
+	
 	/*
     glutInit(&argc, argv);
 	glutInitContextVersion(4, 0);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 	/////
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG );
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(openglCallbackFunction, NULL);
-	GLuint unusedIds = 0;
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
+	
 	////
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA); // set up the double buffering
@@ -319,6 +314,23 @@ int main(int argc, char** argv)
 
     glutMainLoop();
 	*/
+	
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK)
+	printf("glewInit failed");
+	utilCheckGLError("t");
+    
+    if (!GLEW_VERSION_4_4) // check that the machine supports the 2.1 API.
+	exit(1);           // or handle the error in a nicer way
+	
+	
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(openglCallbackFunction, NULL);
+	GLuint unusedIds = 0;
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
+	
+	
+	
 	while (!glfwWindowShouldClose(window)){
 		display();
 		glfwSwapBuffers(window);

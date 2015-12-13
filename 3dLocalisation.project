@@ -28,7 +28,6 @@
   </Reconciliation>
   <VirtualDirectory Name="src">
     <File Name="src/shader.cpp"/>
-    <File Name="src/glad.c"/>
     <File Name="src/voxelOperations.cpp"/>
     <File Name="src/GLutil.cpp"/>
     <VirtualDirectory Name="Tests">
@@ -46,9 +45,6 @@
   <VirtualDirectory Name="include">
     <VirtualDirectory Name="glad">
       <File Name="include/glad/glad.h"/>
-    </VirtualDirectory>
-    <VirtualDirectory Name="KHR">
-      <File Name="include/KHR/khrplatform.h"/>
     </VirtualDirectory>
     <File Name="include/voxelOperations.h"/>
     <File Name="include/Common.h"/>
@@ -79,7 +75,7 @@
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <General OutputFile="" IntermediateDirectory="./Debug" Command="/home/rude/Documents/NewWorkspace/3dLocalisation/build/3dLocalisation" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="/home/rude/Documents/NewWorkspace/3dLocalisation/build" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
