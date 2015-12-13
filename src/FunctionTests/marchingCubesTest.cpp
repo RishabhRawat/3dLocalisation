@@ -111,13 +111,17 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
     // glViewport(0,0,VOXELNUM,VOXELNUM);
     shader.bind();
+	
+	glUniform4fv(shader.shaderUniform("cubeVector"), 8*4,&cubeVector[0][0]);
+	
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_3D, texID[0]);
-
     glUniform1i(shader.shaderUniform("my_color_texture"), 0);
     glUniform1i(shader.shaderUniform("my_data_texture"), 0);
+	
 	glBindTexture(GL_TEXTURE_2D, lookupTableTexture);
 	glUniform1i(shader.shaderUniform("lookupTableTexture"), 0);
+	
     glUniformMatrix4fv(shader.shaderUniform("Transform"), 1, GL_FALSE, glm::value_ptr(MVP));
     glBindVertexArray(gVAO);
     glDrawArrays(GL_POINTS, 0, 27);
