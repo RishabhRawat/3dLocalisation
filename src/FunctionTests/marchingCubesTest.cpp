@@ -27,13 +27,14 @@ GLuint gVAO, gVBO;
 
 void createSquare(void)
 {
+	utilCheckGLError("q");
     glGenVertexArrays(1, &gVAO);
     glBindVertexArray(gVAO);
-
+	utilCheckGLError("c");
     // make and bind the VBO
     glGenBuffers(1, &gVBO);
     glBindBuffer(GL_ARRAY_BUFFER, gVBO);
-
+	utilCheckGLError("b");
     // Put the three triangle verticies into the VBO
     GLfloat vertexData[(VOXELNUM-1)*(VOXELNUM-1)*(VOXELNUM-1)*3];
 
@@ -50,9 +51,10 @@ void createSquare(void)
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
     // connect the xyz to the "vPosition" attribute of the vertex shader
-
+	utilCheckGLError("a");
 	GLint attrib = glGetAttribLocation(shader.shader_id, "Vertex");
     glEnableVertexAttribArray(attrib);
+	
     glVertexAttribPointer(attrib, 3, GL_FLOAT, GL_TRUE,3*sizeof(GLfloat), NULL);
 	utilCheckGLError("s");
 
@@ -65,7 +67,6 @@ void init(void)
 {
     // shader = new Shader();
 	//assuming VOXELNUM = 4
-	
 	glGenTextures(1, &lookupTableTexture);
 	glBindTexture(GL_TEXTURE_2D, lookupTableTexture);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -73,8 +74,8 @@ void init(void)
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	
@@ -192,6 +193,70 @@ void dragHandler(int x, int y)
 		MVP = Projection * View * glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 	}
 }
+/*
+void APIENTRY openglCallbackFunction(GLenum source,
+GLenum type,
+GLuint id,
+GLenum severity,
+GLsizei length,
+const GLchar* message,
+void * userParam)
+{
+printf("Debug message with source 0x%04X, type 0x%04X, "
+"id %u, severity 0x%0X, '%s'\n",
+source, type, id, severity, message);
+}*/
+
+static void openglCallbackFunction(GLenum source,
+                                     GLenum type,
+                                     GLuint id,
+                                     GLenum severity,
+                                     GLsizei length,
+                                     const GLchar* message,
+                                     void* userParam)
+{
+
+    std::cout << "---------------------opengl-callback-start------------" << std::endl;
+    std::cout << "message: " << message << std::endl;
+    std::cout << "type: ";
+    switch (type) {
+    case GL_DEBUG_TYPE_ERROR:
+	std::cout << "ERROR";
+	break;
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+	std::cout << "DEPRECATED_BEHAVIOR";
+	break;
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+	std::cout << "UNDEFINED_BEHAVIOR";
+	break;
+    case GL_DEBUG_TYPE_PORTABILITY:
+	std::cout << "PORTABILITY";
+	break;
+    case GL_DEBUG_TYPE_PERFORMANCE:
+	std::cout << "PERFORMANCE";
+	break;
+    case GL_DEBUG_TYPE_OTHER:
+	std::cout << "OTHER";
+	break;
+    }
+    std::cout << std::endl;
+
+    std::cout << "id: " << id << std::endl;
+    std::cout << "severity: ";
+    switch (severity) {
+    case GL_DEBUG_SEVERITY_LOW:
+	std::cout << "LOW";
+	break;
+    case GL_DEBUG_SEVERITY_MEDIUM:
+	std::cout << "MEDIUM";
+	break;
+    case GL_DEBUG_SEVERITY_HIGH:
+	std::cout << "HIGH";
+	break;
+    }
+    std::cout << std::endl;
+    std::cout << "---------------------opengl-callback-end--------------" << std::endl;
+}
 int main(int argc, char** argv)
 {
 	
@@ -201,27 +266,44 @@ int main(int argc, char** argv)
 
 
     glutInit(&argc, argv);
+	glutInitContextVersion(4, 0);
+	glutInitContextProfile(GLUT_CORE_PROFILE);
+	/*
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG );
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(openglCallbackFunction, NULL);
+	GLuint unusedIds = 0;
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
+*/
+
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA); // set up the double buffering
+	
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("A basic OpenGL Window");
+	
 	
 	glutMotionFunc(dragHandler);
     glutMouseFunc(mouseHandler);
 	
     glutDisplayFunc(display);
     glutIdleFunc(display);
-	
+
 	
 
     glutReshapeFunc(reshape);
 
     glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK)
+	if (glewInit() != GLEW_OK)
 	printf("glewInit failed");
-    if (!GLEW_VERSION_3_3) // check that the machine supports the 2.1 API.
+	utilCheckGLError("t");
+    
+    if (!GLEW_VERSION_4_4) // check that the machine supports the 2.1 API.
 	exit(1);           // or handle the error in a nicer way
+	
     init();
+	
+	
 
     glutMainLoop();
 
