@@ -126,6 +126,8 @@ void display(void)
     utilCheckGLError("3");
 
     shader.unbind();
+	
+	glutSwapBuffers();
 }
 
 void reshape(int width, int height)
@@ -140,7 +142,7 @@ void reshape(int width, int height)
             identityMat[0]= 1.0f;
     }*/
 }
-/*
+
 float oldx, oldy, drag;
 void mouseHandler(int button, int state, int x, int y)
 {
@@ -169,7 +171,7 @@ void mouseHandler(int button, int state, int x, int y)
 		float dy = y-oldy;
 		if(dx*dy == 0)
 			return;
-		Model = glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
+		Model = glm::rotate(Model, std::sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 		drag = 0;
     } else { // normal button event
 		printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
@@ -184,9 +186,9 @@ void dragHandler(int x, int y)
 		float dy = y-oldy;
 		if(dx*dy == 0)
 			return;
-		MVP = Projection * View * glm::rotate(Model, sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
+		MVP = Projection * View * glm::rotate(Model, std::sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 	}
-}*/
+}
 
 static void openglCallbackFunction(GLenum source,
                                      GLenum type,
@@ -252,7 +254,7 @@ int main(int argc, char** argv)
 	Model = glm::mat4();;
 	View = glm::mat4();
 	Projection = glm::mat4();;
-
+/******************** GLFW
 	if (!glfwInit())
     exit(EXIT_FAILURE);
 	
@@ -276,14 +278,14 @@ int main(int argc, char** argv)
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
-	init();
+	 */
+ 
 	
-	/*
     glutInit(&argc, argv);
-	glutInitContextVersion(4, 0);
-	glutInitContextProfile(GLUT_CORE_PROFILE);
+	//glutInitContextVersion(4, 4);
+	//glutInitContextProfile(GLUT_CORE_PROFILE);
 	/////
-	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG );
+	//glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG );
 	
 	////
 
@@ -299,7 +301,9 @@ int main(int argc, char** argv)
 	
     glutDisplayFunc(display);
     glutIdleFunc(display);
-
+	
+	
+	
 	
 
     glutReshapeFunc(reshape);
@@ -311,10 +315,13 @@ int main(int argc, char** argv)
     
     if (!GLEW_VERSION_4_4) // check that the machine supports the 2.1 API.
 	exit(1);           // or handle the error in a nicer way
-
-    glutMainLoop();
-	*/
 	
+	init();
+	
+    glutMainLoop();
+	
+	
+	/****************
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	printf("glewInit failed");
@@ -338,6 +345,7 @@ int main(int argc, char** argv)
 	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
+	 */ 
     return 0;
 }
 
