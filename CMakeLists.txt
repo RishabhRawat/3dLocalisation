@@ -38,15 +38,14 @@ find_package (Threads REQUIRED)
 
 #pkg_search_module(OPENCV REQUIRED opencv)
 
-#pkg_search_module(GLEW REQUIRED glew)
-#pkg_search_module(GLFW REQUIRED glfw3)
-#include_directories(include ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
-#target_link_libraries(3dLocalisation  ${GLEW_LIBRARIES} ${GLFW_LIBRARIES} ${X11_X11_LIB} ${X11_Xinerama_LIB} ${X11_Xcursor_LIB} 
-	 #${X11_Xxf86vm_LIB} ${X11_Xrandr_LIB} ${CMAKE_THREAD_LIBS_INIT} ${X11_Xinput_LIB} ${CMAKE_DL_LIBS})
-
-
-pkg_search_module(GLEW REQUIRED glew)
-include_directories(include)
-target_link_libraries(3dLocalisation "-lglut" ${GLEW_LIBRARIES} ${X11_X11_LIB} ${X11_Xinerama_LIB} ${X11_Xcursor_LIB} 
+pkg_search_module(GLFW REQUIRED glfw3)
+include_directories(include ${GLFW_INCLUDE_DIRS})
+target_link_libraries(3dLocalisation ${GLFW_LIBRARIES} ${X11_X11_LIB} ${X11_Xinerama_LIB} ${X11_Xcursor_LIB} 
 	 ${X11_Xxf86vm_LIB} ${X11_Xrandr_LIB} ${CMAKE_THREAD_LIBS_INIT} ${X11_Xinput_LIB} ${CMAKE_DL_LIBS})
+
+
+#pkg_search_module(GLEW REQUIRED glew)
+#include_directories(include)
+#target_link_libraries(3dLocalisation "-lglut" ${GLEW_LIBRARIES} ${X11_X11_LIB} ${X11_Xinerama_LIB} ${X11_Xcursor_LIB} 
+#	 ${X11_Xxf86vm_LIB} ${X11_Xrandr_LIB} ${CMAKE_THREAD_LIBS_INIT} ${X11_Xinput_LIB} ${CMAKE_DL_LIBS})
 

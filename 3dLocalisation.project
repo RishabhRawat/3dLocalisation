@@ -41,6 +41,7 @@
       <File Name="src/Tests/3ddepthmap.cpp"/>
       <File Name="src/Tests/3dlocalisation.cpp"/>
     </VirtualDirectory>
+    <File Name="src/glad.c"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <VirtualDirectory Name="glad">
@@ -51,6 +52,9 @@
     <File Name="include/shader.h"/>
     <File Name="include/marchingCubes.h"/>
     <File Name="include/GLutil.h"/>
+    <VirtualDirectory Name="KHR">
+      <File Name="include/KHR/khrplatform.h"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

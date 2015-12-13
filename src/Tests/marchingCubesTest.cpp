@@ -127,7 +127,7 @@ void display(void)
 
     shader.unbind();
 	
-	glutSwapBuffers();
+	//glutSwapBuffers();
 }
 
 void reshape(int width, int height)
@@ -142,7 +142,7 @@ void reshape(int width, int height)
             identityMat[0]= 1.0f;
     }*/
 }
-
+/*
 float oldx, oldy, drag;
 void mouseHandler(int button, int state, int x, int y)
 {
@@ -188,7 +188,7 @@ void dragHandler(int x, int y)
 			return;
 		MVP = Projection * View * glm::rotate(Model, std::sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 	}
-}
+}*/
 
 static void openglCallbackFunction(GLenum source,
                                      GLenum type,
@@ -196,7 +196,7 @@ static void openglCallbackFunction(GLenum source,
                                      GLenum severity,
                                      GLsizei length,
                                      const GLchar* message,
-                                     void* userParam)
+                                     const void* userParam)
 {
 
     std::cout << "---------------------opengl-callback-start------------" << std::endl;
@@ -254,16 +254,16 @@ int main(int argc, char** argv)
 	Model = glm::mat4();;
 	View = glm::mat4();
 	Projection = glm::mat4();;
-/******************** GLFW
+
 	if (!glfwInit())
     exit(EXIT_FAILURE);
 	
-	//glfwWindowHint(GLFW_CLIENT_API,GLFW_OPENGL_API);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,4);
+	glfwWindowHint(GLFW_CLIENT_API,GLFW_OPENGL_API);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,4);
 	
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT,GL_TRUE );
-	//glfwWindowHint(GLFW_OPENGL_PROFILE ,GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE ,GLFW_OPENGL_CORE_PROFILE);
 	
 	glfwSetErrorCallback(glfw_error_callback);
 	
@@ -274,61 +274,15 @@ int main(int argc, char** argv)
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-	// remember
-
+	
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
-	 */
- 
-	
-    glutInit(&argc, argv);
-	//glutInitContextVersion(4, 4);
-	//glutInitContextProfile(GLUT_CORE_PROFILE);
-	/////
-	//glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG );
-	
-	////
-
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA); // set up the double buffering
-	
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("A basic OpenGL Window");
-	
-	
-	glutMotionFunc(dragHandler);
-    glutMouseFunc(mouseHandler);
-	
-    glutDisplayFunc(display);
-    glutIdleFunc(display);
-	
-	
-	
-	
-
-    glutReshapeFunc(reshape);
-
-    glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
-	printf("glewInit failed");
-	utilCheckGLError("t");
-    
-    if (!GLEW_VERSION_4_4) // check that the machine supports the 2.1 API.
-	exit(1);           // or handle the error in a nicer way
-	
-	init();
-	
-    glutMainLoop();
-	
-	
-	/****************
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
-	printf("glewInit failed");
-	utilCheckGLError("t");
-    
-    if (!GLEW_VERSION_4_4) // check that the machine supports the 2.1 API.
-	exit(1);           // or handle the error in a nicer way
+	 
+	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
+        return -1;
+    }
 	
 	
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -336,6 +290,7 @@ int main(int argc, char** argv)
 	GLuint unusedIds = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
 	
+	init();
 	
 	
 	while (!glfwWindowShouldClose(window)){
@@ -345,7 +300,7 @@ int main(int argc, char** argv)
 	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
-	 */ 
-    return 0;
+	
+	return 0;
 }
 
