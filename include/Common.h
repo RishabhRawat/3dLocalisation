@@ -2,10 +2,8 @@
 #define COMMON_H
 
 #include <stdlib.h>
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glext.h>
-#include <GL/freeglut.h>
+#define GLFW_INCLUDE_GLEXT
+#include <GLFW/glfw3.h>
 #include "shader.h"
 extern Shader shader;
 

@@ -1,1 +1,0 @@
-./Debug/src_shader.cpp.o ./Debug/src_GLutil.cpp.o ./Debug/src_voxelOperations.cpp.o ./Debug/FunctionTests_marchingCubesTest.cpp.o

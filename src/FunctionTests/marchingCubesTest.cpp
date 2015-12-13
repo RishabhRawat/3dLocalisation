@@ -131,7 +131,7 @@ void display(void)
 
     shader.unbind();
 
-    glutSwapBuffers();
+	glfwSwapBuffers(window);
 }
 
 void reshape(int width, int height)
@@ -257,6 +257,11 @@ static void openglCallbackFunction(GLenum source,
     std::cout << std::endl;
     std::cout << "---------------------opengl-callback-end--------------" << std::endl;
 }
+void glfw_error_callback(int error, const char* description)
+{
+    fputs(description, stderr);
+}
+
 int main(int argc, char** argv)
 {
 	
@@ -264,7 +269,24 @@ int main(int argc, char** argv)
 	View = glm::mat4();
 	Projection = glm::mat4();;
 
+	if (!glfwInit())
+    exit(EXIT_FAILURE);
+	
+	init();
+	glfwSetErrorCallback(error_callback);
+	
+	GLFWwindow* window = glfwCreateWindow(500, 500, "My Title", NULL, NULL);
+	
+	if (!window)
+	{
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+	// remember
 
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
+	
     glutInit(&argc, argv);
 	glutInitContextVersion(4, 0);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
@@ -300,13 +322,14 @@ int main(int argc, char** argv)
     
     if (!GLEW_VERSION_4_4) // check that the machine supports the 2.1 API.
 	exit(1);           // or handle the error in a nicer way
-	
-    init();
-	
-	
 
     glutMainLoop();
-
+	
+	while (!glfwWindowShouldClose(window)){
+		display();
+	}
+	glfwDestroyWindow(window);
+	glfwTerminate();
     return 0;
 }
 
