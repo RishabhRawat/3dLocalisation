@@ -28,8 +28,11 @@ add_executable(3dLocalisation ${SOURCES})
 
 ## Link libraries
 find_package(PkgConfig REQUIRED)
+find_package(X11 REQUIRED)
+find_package (Threads)
 pkg_search_module(GLFW REQUIRED glfw3)
-pkg_search_module(OPENCV REQUIRED opencv)
+#pkg_search_module(OPENCV REQUIRED opencv)
 
-include_directories(include ${GLFW_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
-target_link_libraries(3dLocalisation ${GLFW} ${CMAKE_DL_LIBS} ${GLFW_LIBRARIES} ${OPENCV_LIBRARIES})
+include_directories(include ${GLFW_INCLUDE_DIRS})
+target_link_libraries(3dLocalisation ${GLFW} ${CMAKE_DL_LIBS} ${GLFW_LIBRARIES} 
+	${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xinerama_LIB} ${X11_Xinput_LIB} ${X11_Xxf86vm_LIB} ${X11_Xcursor_LIB} ${CMAKE_THREAD_LIBS_INIT})

@@ -1,5 +1,3 @@
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
 #include <iostream>
 #include "GLutil.h"
 #include "voxelOperations.h"
@@ -14,12 +12,10 @@
 
 #define VOXEL_INTERNAL_FORMAT GL_RGBA
 
-using namespace cv;
 Shader shader;
 glm::mat4 MVP;
 glm::mat4 Projection, View, Model;
 
-Mat image;
 GLuint texID[1];
 GLuint lookupTableTexture;
 

@@ -1,0 +1,33 @@
+sudo: required
+
+dist: trusty
+
+git:
+  depth: 3
+
+language: cpp
+
+compiler:
+  - gcc
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq xorg-dev libglu1-mesa-dev libglm-dev
+
+install:
+  - mkdir glfw_git
+  - cd glfw_git
+  - git clone https://github.com/glfw/glfw.git
+  - cd glfw
+  - cmake -G "Unix Makefiles" .
+  - make
+  - sudo make install
+  - cd ..
+  - cd ..
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script: make
