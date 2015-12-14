@@ -79,22 +79,24 @@ void init(void)
 	std::vector<GLubyte> InitialData(VOXELNUM*VOXELNUM*VOXELNUM*4, 0);
 	
 	
-	InitialData[(16+5)*4] = 1.0f;
-	InitialData[(16+6)*4] = 1.0f;
+	InitialData[(16+5)*4] = 1;
+	InitialData[(16+6)*4] = 1;
 	
-	InitialData[(16+9)*4] = 1.0f;
-	InitialData[(16+10)*4] = 1.0f;
+	InitialData[(16+9)*4] = 1;
+	InitialData[(16+10)*4] = 1;
 	
-	InitialData[(16*2+5)*4] = 1.0f;
-	InitialData[(16*2+6)*4] = 1.0f;
+	InitialData[(16*2+5)*4] = 1;
+	InitialData[(16*2+6)*4] = 1;
 	
-	InitialData[(16*2+9)*4] = 1.0f;
-	InitialData[(16*2+10)*4] = 1.0f;
+	InitialData[(16*2+9)*4] = 1;
+	InitialData[(16*2+10)*4] = 1;
 	
     texID[0] = utilCreate3DVoxelFromData(VOXELNUM,InitialData);
     const char* Vshader = "#version 440 \n in vec3 Vertex;\nvoid "
                           "main() {	\n	gl_Position = vec4(Vertex,1.0);\n}";
     const char* Gshader = textFileRead("simpleG.geo");
+    //const char* Gshader = textFileRead("error2.geo");
+
 	const char* Fshader = "#version 440 \n uniform sampler3D my_color_texture;\n in vec4 fragColor;\n out vec4 out_Color;\n    void "
                           "main()\n    {\n	out_Color = fragColor;\n    }\n";
     shader.init(Vshader, Fshader, Gshader, 0);
@@ -111,13 +113,14 @@ void display(void)
 	
 	glUniform4fv(shader.shaderUniform("cubeVector"), 8*4,&cubeVector[0][0]);
 	
-    glActiveTexture(GL_TEXTURE0 + 0);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_3D, texID[0]);
     glUniform1i(shader.shaderUniform("my_color_texture"), 0);
     glUniform1i(shader.shaderUniform("my_data_texture"), 0);
 	
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, lookupTableTexture);
-	glUniform1i(shader.shaderUniform("lookupTableTexture"), 0);
+	glUniform1i(shader.shaderUniform("lookupTableTexture"), 1);
 	
     glUniformMatrix4fv(shader.shaderUniform("Transform"), 1, GL_FALSE, glm::value_ptr(MVP));
     glBindVertexArray(gVAO);
@@ -297,7 +300,7 @@ int main(int argc, char** argv)
     }
 	
 	
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(openglCallbackFunction, NULL);
 	GLuint unusedIds = 0;
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
