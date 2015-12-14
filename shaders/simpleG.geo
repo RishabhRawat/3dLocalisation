@@ -3,7 +3,7 @@ layout(points) in;
 layout(TRIANGLE_STRIP, max_vertices = 15) out;
 
 out vec4 fragColor;
-flat out vec3 surfaceNormal;
+out vec3 surfaceNormal;
 uniform mat4 Transform;
 uniform sampler3D my_data_texture;
 uniform isampler2D lookupTableTexture;

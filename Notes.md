@@ -7,11 +7,11 @@
 4. Pointcloud is visualised using meshlab 
 5. Homography is for plane things only, so it will not work.. unfortunately and some [good lectures](http://isit.u-clermont1.fr/~ab/Classes/DIKU-3DCV2/) read lecture 16 especially
 6. Need to convert depth maps into voxel grids
-7. Need to implement voxel API
-8. The depth map merging is available [pcl](https://github.com/PointCloudLibrary/pcl/blob/master/gpu/kinfu/src/cuda/tsdf_volume.cu) under the function tsdf23 
+7. The depth map merging is available [pcl](https://github.com/PointCloudLibrary/pcl/blob/master/gpu/kinfu/src/cuda/tsdf_volume.cu) under the function tsdf23 
 
 ###DONE
 1. Implemented Disparity Maps, the depth maps need a little bit more work
 2. Understood the implementation of crazy tough  [See original Paper](http://homes.cs.washington.edu/~newcombe/papers/newcombe_etal_ismar2011.pdf) eqn 6-9
 3. Created a simplified Document for that
-
+4. Completed Initial Marching Cubes implementation
+5. Half implemented Voxel API
