@@ -61,11 +61,11 @@ void main()
 
 	//vec4 a = lookupVertex(4,2);
 	
-	//if(cubeindex > 10)
+	if(cubeindex < 10)
 	
 	{
 		gl_Position =  Transform*(gl_in[0].gl_Position+vec4(0.1f,0.0f,0.1f,1.0f));
-//		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,0));
+		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,0));
 		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
 		EmitVertex();
 		gl_Position =  Transform*(gl_in[0].gl_Position+vec4(-0.1f,0.0f,0.1f,1.0f));
