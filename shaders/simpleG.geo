@@ -3,6 +3,7 @@ layout(points) in;
 layout(TRIANGLE_STRIP, max_vertices = 15) out;
 
 out vec4 fragColor;
+flat out vec3 surfaceNormal;
 uniform mat4 Transform;
 uniform sampler3D my_data_texture;
 uniform isampler2D lookupTableTexture;
@@ -28,6 +29,8 @@ float retrieveData(vec4 pos)
 
 void main()
 {
+	vec4 vertices[3];
+	vec3 v1,v2,v3;
 	int cubeindex = 0;
 	if(retrieveData(vec4(0.0f, 0.0f, 0.0f, 0.0f)) != 0) cubeindex = cubeindex  + 1;
 	if(retrieveData(vec4(1.0f, 0.0f, 0.0f, 0.0f)) != 0) cubeindex = cubeindex  + 2;
@@ -35,73 +38,42 @@ void main()
 	if(retrieveData(vec4(0.0f, 1.0f, 0.0f, 0.0f)) != 0) cubeindex = cubeindex  + 8;
 
 	if(retrieveData(vec4(0.0f, 0.0f, 1.0f, 0.0f)) != 0) cubeindex = cubeindex  + 16;
-	if(retrieveData(vec4(1.0f, 0.0f, 0.0f, 0.0f)) != 0) cubeindex = cubeindex  + 32;
+	if(retrieveData(vec4(1.0f, 0.0f, 1.0f, 0.0f)) != 0) cubeindex = cubeindex  + 32;
 	if(retrieveData(vec4(1.0f, 1.0f, 1.0f, 0.0f)) != 0) cubeindex = cubeindex  + 64;
-	if(retrieveData(vec4(0.0f, 1.0f ,0.0f, 0.0f)) != 0) cubeindex = cubeindex  + 128;
+	if(retrieveData(vec4(0.0f, 1.0f ,1.0f, 0.0f)) != 0) cubeindex = cubeindex  + 128;
 	
-	if(lookupVertexTable(cubeindex,0) != -1)
+	int i = 0;
+	while(i < 13)
 	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,0));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,1));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,2));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		EndPrimitive();
-	}
-	if(lookupVertexTable(cubeindex,3) != -1)
-	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,3));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,4));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,5));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		EndPrimitive();
-	}
-	if(lookupVertexTable(cubeindex,6) != -1)
-	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,6));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,7));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,8));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		EndPrimitive();
-	}
-	if(lookupVertexTable(cubeindex,9) != -1)
-	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,9));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,10));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,11));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		EndPrimitive();
-	}
-	if(lookupVertexTable(cubeindex,12) != -1)
-	{
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,12));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,13));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		gl_Position = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,14));
-		fragColor = vec4(1.0f,1.0f,1.0f,1.0f);
-		EmitVertex();
-		EndPrimitive();
+		if(lookupVertexTable(cubeindex,i) != -1)
+		{
+			vertices[0] = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,i));
+			i++;
+			vertices[1] = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,i));
+			i++;
+			vertices[2] = Transform*(gl_in[0].gl_Position+lookupVertex(cubeindex,i));
+			i++;
+			v1 = (vertices[2] - vertices[0]).rgb;
+			v2 = (vertices[2] - vertices[1]).rgb;
+			v3 = cross(v1,v2);
+
+			gl_Position = vertices[0];
+			fragColor = vec4(0.2f,0.0f,0.8f,1.0f);
+			surfaceNormal = v3;
+			EmitVertex();
+			gl_Position = vertices[1];
+			fragColor = vec4(0.2f,0.0f,0.8f,1.0f);
+			surfaceNormal = v3;
+			EmitVertex();
+			gl_Position = vertices[2];
+			fragColor = vec4(0.2f,0.0f,0.8f,1.0f);
+			surfaceNormal = v3;
+			EmitVertex();
+			EndPrimitive();
+		}
+		else
+		{
+			break;
+		}
 	}
 }

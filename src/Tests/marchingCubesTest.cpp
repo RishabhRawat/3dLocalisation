@@ -97,8 +97,7 @@ void init(void)
     const char* Gshader = textFileRead("simpleG.geo");
     //const char* Gshader = textFileRead("error2.geo");
 
-	const char* Fshader = "#version 440 \n uniform sampler3D my_color_texture;\n in vec4 fragColor;\n out vec4 out_Color;\n    void "
-                          "main()\n    {\n	out_Color = fragColor;\n    }\n";
+	const char* Fshader = textFileRead("simpleFshader.frag");
     shader.init(Vshader, Fshader, Gshader, 0);
 	createSquare();
 }
@@ -153,15 +152,20 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	{
 		sticky = true;
 		drag = true;
+		dx = 0;
+		dy = 0;
 	}
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
 	{
 		sticky = false;
-		float leng = std::sqrt(dx*dx+dy*dy)/300.0f;
-		Model = glm::rotate(Model, leng, glm::normalize(glm::vec3(dy, dx, 0.0f)));
-		MVP = Projection * View * Model;
-		dx = 0;
-		dy = 0;
+		if(dx != 0 && dy != 0)
+		{
+			float leng = std::sqrt(dx*dx+dy*dy)/300.0f;
+			Model = glm::rotate(Model, leng, glm::normalize(glm::vec3(dy, dx, 0.0f)));
+			MVP = Projection * View * Model;
+			dx = 0;
+			dy = 0;
+		}
 	}
 }
 
