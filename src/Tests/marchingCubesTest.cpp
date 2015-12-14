@@ -92,10 +92,10 @@ void init(void)
 	InitialData[(16*2+10)*4] = 1.0f;
 	
     texID[0] = utilCreate3DVoxelFromData(VOXELNUM,InitialData);
-    const char* Vshader = "#version 330 \n in vec3 Vertex;\nvoid "
+    const char* Vshader = "#version 440 \n in vec3 Vertex;\nvoid "
                           "main() {	\n	gl_Position = vec4(Vertex,1.0);\n}";
     const char* Gshader = textFileRead("simpleG.geo");
-	const char* Fshader = "#version 330 \n uniform sampler3D my_color_texture;\n in vec4 fragColor;\n out vec4 out_Color;\n    void "
+	const char* Fshader = "#version 440 \n uniform sampler3D my_color_texture;\n in vec4 fragColor;\n out vec4 out_Color;\n    void "
                           "main()\n    {\n	out_Color = fragColor;\n    }\n";
     shader.init(Vshader, Fshader, Gshader, 0);
 	createSquare();
@@ -126,8 +126,6 @@ void display(void)
     utilCheckGLError("3");
 
     shader.unbind();
-	
-	//glutSwapBuffers();
 }
 
 void reshape(int width, int height)
@@ -142,53 +140,60 @@ void reshape(int width, int height)
             identityMat[0]= 1.0f;
     }*/
 }
-/*
-float oldx, oldy, drag;
-void mouseHandler(int button, int state, int x, int y)
+bool sticky, drag;
+double oldx, oldy;
+double dx, dy;
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	if (button == 3) // It's a wheel up event
-    {
-		// Each wheel event reports like a button click, GLUT_DOWN then GLUT_UP
-		if (state == GLUT_UP)
-			return; // Disregard redundant GLUT_UP events
-		Model = glm::scale(Model, glm::vec3(0.9f));
-    } else if (button == 4) // It's a wheel down event
-    {
-		// Each wheel event reports like a button click, GLUT_DOWN then GLUT_UP
-		if (state == GLUT_UP)
-			return; // Disregard redundant GLUT_UP events
-		Model = glm::scale(Model, glm::vec3(1/0.9f));
-    } else if (button == GLUT_LEFT_BUTTON) // It's a wheel down event
-    {
-		// Each wheel event reports like a button click, GLUT_DOWN then GLUT_UP
-		if (state == GLUT_DOWN && drag == 0){
-			oldx = x;
-			oldy = y;
-			drag = 1;
-			
-		}
-		float dx = x-oldx;
-		float dy = y-oldy;
-		if(dx*dy == 0)
-			return;
-		Model = glm::rotate(Model, std::sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
-		drag = 0;
-    } else { // normal button event
-		printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
-    }
-    MVP = Projection * View * Model;
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		sticky = true;
+		drag = true;
+	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+	{
+		sticky = false;
+		float leng = std::sqrt(dx*dx+dy*dy)/300.0f;
+		Model = glm::rotate(Model, leng, glm::normalize(glm::vec3(dy, dx, 0.0f)));
+		MVP = Projection * View * Model;
+		dx = 0;
+		dy = 0;
+	}
 }
-void dragHandler(int x, int y)
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	if(yoffset > 0)
+		Model = glm::scale(Model, glm::vec3(0.9f));
+	else
+		Model = glm::scale(Model, glm::vec3(1/0.9f));
+	MVP = Projection * View * Model;
+}
+
+void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if(drag)
 	{
-		float dx = x-oldx;
-		float dy = y-oldy;
+		oldx = xpos;
+		oldy = ypos;
+		drag = false;
+	}
+	if(sticky)
+	{
+		dx = xpos-oldx;
+		dy = ypos-oldy;
 		if(dx*dy == 0)
 			return;
-		MVP = Projection * View * glm::rotate(Model, std::sqrt(dx*dx+dy*dy)/300.0f, glm::normalize(glm::vec3(dy, dx, 0.0f)));
+		float leng = std::sqrt(dx*dx+dy*dy)/300.0f;
+		
+		MVP = Projection * View * glm::rotate(Model, leng, glm::normalize(glm::vec3(dy, dx, 0.0f)));
 	}
-}*/
+}
+
+
+
+
 
 static void openglCallbackFunction(GLenum source,
                                      GLenum type,
@@ -245,6 +250,7 @@ static void openglCallbackFunction(GLenum source,
 void glfw_error_callback(int error, const char* description)
 {
 	std::cerr<<"sssssssssssssssssssss";
+	std::cout<<"sssssssssssssssssssss";
     fputs(description, stderr);
 }
 
@@ -276,6 +282,12 @@ int main(int argc, char** argv)
 	}
 	
 	glfwMakeContextCurrent(window);
+	
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetCursorPosCallback(window, cursor_pos_callback);
+	
+	
 	glfwSwapInterval(1);
 	 
 	if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -296,6 +308,7 @@ int main(int argc, char** argv)
 	while (!glfwWindowShouldClose(window)){
 		display();
 		glfwSwapBuffers(window);
+		glfwPollEvents();
 
 	}
 	glfwDestroyWindow(window);
