@@ -1,5 +1,4 @@
 #include "voxelOperations.h"
-#include "GLutil.h"
 #include <vector>
 #include <iostream>
 
@@ -64,8 +63,7 @@ void updateVoxel(GLuint FramebufferName, GLuint gVAO, GLuint Voxel)
 	glBindVertexArray(gVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0); // Unbind our Vertex Array Object
-	utilCheckGLError("3");
-
+	
 	
 	shader.unbind();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

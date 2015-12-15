@@ -42,6 +42,7 @@
       <File Name="src/Tests/3dlocalisation.cpp"/>
     </VirtualDirectory>
     <File Name="src/glad.c"/>
+    <File Name="src/voxel.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <VirtualDirectory Name="glad">
@@ -55,6 +56,7 @@
     <VirtualDirectory Name="KHR">
       <File Name="include/KHR/khrplatform.h"/>
     </VirtualDirectory>
+    <File Name="include/voxel.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
@@ -79,7 +81,7 @@
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="" IntermediateDirectory="./Debug" Command="/home/rude/Documents/NewWorkspace/3dLocalisation/build/3dLocalisation" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="/home/rude/Documents/NewWorkspace/3dLocalisation/build" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="" IntermediateDirectory="./Debug" Command="$(ProjectPath)build/3dLocalisation" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(ProjectPath)3dLocalisation/build" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
@@ -98,7 +100,7 @@
         <SingleFileCommand/>
         <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory>/home/rude/Documents/NewWorkspace/3dLocalisation/build</WorkingDirectory>
+        <WorkingDirectory>$(ProjectPath)build</WorkingDirectory>
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild/>

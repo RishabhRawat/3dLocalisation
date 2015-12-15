@@ -1,5 +1,4 @@
 #include <iostream>
-#include "GLutil.h"
 #include "voxelOperations.h"
 #include "marchingCubes.h"
 
@@ -23,15 +22,12 @@ GLuint gVAO, gVBO;
 
 void createSquare(void)
 {
-	utilCheckGLError("q");
-    glGenVertexArrays(1, &gVAO);
+	glGenVertexArrays(1, &gVAO);
     glBindVertexArray(gVAO);
-	utilCheckGLError("c");
-    // make and bind the VBO
+	// make and bind the VBO
     glGenBuffers(1, &gVBO);
     glBindBuffer(GL_ARRAY_BUFFER, gVBO);
-	utilCheckGLError("b");
-    // Put the three triangle verticies into the VBO
+	// Put the three triangle verticies into the VBO
     GLfloat vertexData[(VOXELNUM-1)*(VOXELNUM-1)*(VOXELNUM-1)*3];
 
     for (unsigned int z = 0; z < 3; z++) {
@@ -47,13 +43,11 @@ void createSquare(void)
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
     // connect the xyz to the "vPosition" attribute of the vertex shader
-	utilCheckGLError("a");
 	GLint attrib = glGetAttribLocation(shader.shader_id, "Vertex");
     glEnableVertexAttribArray(attrib);
 	
     glVertexAttribPointer(attrib, 3, GL_FLOAT, GL_TRUE,3*sizeof(GLfloat), NULL);
-	utilCheckGLError("s");
-
+	
     // unbind the VBO and VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -125,8 +119,7 @@ void display(void)
     glBindVertexArray(gVAO);
     glDrawArrays(GL_POINTS, 0, 27);
     glBindVertexArray(0); // Unbind our Vertex Array Object
-    utilCheckGLError("3");
-
+    
     shader.unbind();
 }
 
@@ -311,9 +304,28 @@ int main(int argc, char** argv)
 	
 	init();
 	
-	
+	int nbFrames;
+	double currentTime = 0;
+	double lastTime = 0;
 	while (!glfwWindowShouldClose(window)){
-		display();
+	    display();
+
+	    // Measure speed
+	    double currentTime = glfwGetTime();
+	    nbFrames++;
+
+	    if (currentTime - lastTime >= 1.0) { // If last cout was more than 1 sec ago
+	        char title[256];
+	        title[255] = '\0';
+
+	        snprintf(title, 255, "FPS: %d", nbFrames);
+
+	        glfwSetWindowTitle(window, title);
+
+	        nbFrames = 0;
+	        lastTime += 1.0;
+	    }
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
