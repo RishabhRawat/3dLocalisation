@@ -130,7 +130,10 @@ void Shader::unbind() {
 }
 
 GLint Shader::shaderUniform(const char* name){
-	return glGetUniformLocation(shader_id, name);
+	GLint loc = glGetUniformLocation(shader_id, name);
+	if(loc == -1)
+		std::cout<<"INVALID BIND TARGET FOR: "<<name<<std::endl;
+	return loc;
 }
 GLint Shader::shaderAttrib(const char* name){
 	return glGetAttribLocation(shader_id, name);

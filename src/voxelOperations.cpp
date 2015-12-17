@@ -45,7 +45,7 @@ GLuint utilCreate3DVoxelFromData(unsigned int size, std::vector<GLubyte> Initial
 }
 
 // Read from ping write to pong
-void updateVoxel(GLuint FramebufferName, GLuint gVAO, GLuint Voxel)
+void updateVoxel(Shader shader, GLuint FramebufferName, GLuint gVAO, GLuint Voxel)
 {
 	glViewport(0,0,VOXELNUM,VOXELNUM);	
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);

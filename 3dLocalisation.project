@@ -40,6 +40,7 @@
       <File Name="src/Tests/3dtextureTest.cpp"/>
       <File Name="src/Tests/3ddepthmap.cpp"/>
       <File Name="src/Tests/3dlocalisation.cpp"/>
+      <File Name="src/Tests/voxelMergeTest.cpp"/>
     </VirtualDirectory>
     <File Name="src/glad.c"/>
     <File Name="src/voxel.cpp"/>

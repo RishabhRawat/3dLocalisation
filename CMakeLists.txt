@@ -7,17 +7,15 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(warnings "/W4 /WX /EHsc")
 endif()
 
-set(debug, "-g -O0")
+set(debug, "-std=c++11 -g -O0")
 
-set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} ${warnings} ${debug}")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${warnings} ${debug}")
-
-set(CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-
+set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${warnings} ${debug}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${debug}")
+set (CMAKE_CXX_STANDARD 11)
 
 file(GLOB SOURCES "src/*.c*")
-file(GLOB TARGETFILE "src/Tests/marchingCubesTest.cpp")
+#file(GLOB TARGETFILE "src/Tests/marchingCubesTest.cpp")
+file(GLOB TARGETFILE "src/Tests/voxelMergeTest.cpp")
 file(GLOB SHADERS "shaders/*.*")
 file(COPY ${SHADERS} DESTINATION ".")
 #file(GLOB SOURCES "src/Tests/marchingCubesTest.cpp")
@@ -32,6 +30,7 @@ add_executable(3dLocalisation ${SOURCES})
 find_package(PkgConfig REQUIRED)
 find_package(X11 REQUIRED)
 find_package (Threads REQUIRED)
+find_package(PNG REQUIRED)
 #find_package(GLM REQUIRED)
 
 #find_package(glbinding REQUIRED)
@@ -39,8 +38,8 @@ find_package (Threads REQUIRED)
 #pkg_search_module(OPENCV REQUIRED opencv)
 
 pkg_search_module(GLFW REQUIRED glfw3)
-include_directories(include ${GLFW_INCLUDE_DIRS})
-target_link_libraries(3dLocalisation ${GLFW_LIBRARIES} ${X11_X11_LIB} ${X11_Xinerama_LIB} ${X11_Xcursor_LIB} 
+include_directories(include)
+target_link_libraries(3dLocalisation  ${GLFW_LIBRARIES} ${PNG_LIBRARIES} ${X11_X11_LIB} ${X11_Xinerama_LIB} ${X11_Xcursor_LIB} 
 	 ${X11_Xxf86vm_LIB} ${X11_Xrandr_LIB} ${CMAKE_THREAD_LIBS_INIT} ${X11_Xinput_LIB} ${CMAKE_DL_LIBS})
 
 
