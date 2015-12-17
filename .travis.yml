@@ -22,6 +22,9 @@ install:
   - cmake -G "Unix Makefiles" .
   - make
   - sudo make install
+  - pkg-config --libs glfw3
+  - cat /usr/local/lib/pkgconfig/glfw3.pc
+  - pkg-config --list-all | grep "glf"
   - cd ..
   - cd ..
 
