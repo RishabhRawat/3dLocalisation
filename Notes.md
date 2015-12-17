@@ -8,6 +8,8 @@
 5. Homography is for plane things only, so it will not work.. unfortunately and some [good lectures](http://isit.u-clermont1.fr/~ab/Classes/DIKU-3DCV2/) read lecture 16 especially
 6. Need to convert depth maps into voxel grids
 7. The depth map merging is available [pcl](https://github.com/PointCloudLibrary/pcl/blob/master/gpu/kinfu/src/cuda/tsdf_volume.cu) under the function tsdf23 
+8. The bilateral filter (eqn 2) in kinect-fusion is currently not implemented as it is not considered important enough, may change with future releases.
+9. __UPDATE__ we do not need bilateral filter as we are not doing pose estimation using kinect fusion idea!!!
 
 ###DONE
 1. Implemented Disparity Maps, the depth maps need a little bit more work

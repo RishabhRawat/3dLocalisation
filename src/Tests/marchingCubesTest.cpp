@@ -98,7 +98,9 @@ void init(void)
 
 void display(void)
 {
-
+	int intl;
+	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS,&intl);
+	std::cout<<intl<<std::endl;
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     // glViewport(0,0,VOXELNUM,VOXELNUM);

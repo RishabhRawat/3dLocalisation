@@ -6,6 +6,7 @@ public:
 	Voxel();
 	~Voxel();
 	void readPCD(const char * filename);
+	void readPNG(const char * filename);
 	
 	float depthData[VOXELNUM*VOXELNUM*VOXELNUM*4];
 	float colorWeightData[VOXELNUM*VOXELNUM*VOXELNUM*4];
