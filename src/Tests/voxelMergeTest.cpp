@@ -7,9 +7,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/ext.hpp>  
 
-
+#define CLIP_D 0.03f
 #define VOXEL_INTERNAL_FORMAT GL_RGBA
 
 Shader shader_rendering;
@@ -17,6 +18,7 @@ Shader shader_merging;
 
 glm::mat4 MVP;
 glm::mat4 Projection, View, Model;
+glm::mat3 K_camera, invK;
 
 GLuint texID[2];
 GLuint lookupTableTexture;
@@ -122,6 +124,9 @@ void init(void)
 
 
 	createSquare();
+
+	K_camera = glm::mat3(535.4, 0, 320.1, 0, 539.2, 247.6, 0, 0, 1);
+	invK = glm::inverse(K_camera);
 }
 
 void display(void)
@@ -144,8 +149,16 @@ void display(void)
 		glBindTexture(GL_TEXTURE_2D, incomingImage);
 		glUniform1i(shader_merging.shaderUniform("depthMap"), 1);
 
-
+		glUniform1ui(shader_merging.shaderUniform("mu"),CLIP_D);
 		glUniform1i(shader_merging.shaderUniform("voxelDepth"),VOXELNUM);
+		// -2.1510 0.6848 1.4888 -0.2495 0.7955 -0.5204 0.1843
+		glm::quat q(0.1843, -0.2495, 0.7955, -0.5204);
+		glm::mat3 Rmat = glm::mat3_cast(q);
+		Rmat = glm::inverse(Rmat);
+		glUniform3f(shader_merging.shaderUniform("t_gk"),-2.1510, 0.6848, 1.4888);
+		glUniformMatrix3fv(shader_merging.shaderUniform("inv_R_gk"),1,GL_FALSE,&Rmat[0][0]);
+		glUniformMatrix3fv(shader_merging.shaderUniform("K_camera"),1,GL_TRUE,&K_camera[0][0]);
+		glUniformMatrix3fv(shader_merging.shaderUniform("InverseK"),1,GL_TRUE,&invK[0][0]);
 
 		GLenum attachment  = GL_COLOR_ATTACHMENT0+(1-ping);
 		glDrawBuffers(1, &attachment);
