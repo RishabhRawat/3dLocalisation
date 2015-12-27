@@ -149,7 +149,7 @@ void display(void)
 		glBindTexture(GL_TEXTURE_2D, incomingImage);
 		glUniform1i(shader_merging.shaderUniform("depthMap"), 1);
 
-		glUniform1ui(shader_merging.shaderUniform("mu"),CLIP_D);
+		glUniform1f(shader_merging.shaderUniform("mu"),CLIP_D);
 		glUniform1i(shader_merging.shaderUniform("voxelDepth"),VOXELNUM);
 		// -2.1510 0.6848 1.4888 -0.2495 0.7955 -0.5204 0.1843
 		glm::quat q(0.1843, -0.2495, 0.7955, -0.5204);

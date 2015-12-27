@@ -4,12 +4,12 @@
 
 GLuint utilCreate3DVoxel(int size)
 {
-	std::vector<GLubyte> InitialData(size*size*size*4, 255);
+	std::vector<GLfloat> InitialData(size*size*size*4, 999);
 	
 	GLuint texID;
 	glGenTextures(1, &texID);
 	glBindTexture(GL_TEXTURE_3D, texID);
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, size, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, &InitialData[0]);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA16F, size, size, size, 0, GL_RGBA, GL_FLOAT, &InitialData[0]);
 	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -21,7 +21,7 @@ GLuint utilCreate3DVoxel(int size)
 	
 }
 
-GLuint utilCreate3DVoxelFromData(unsigned int size, std::vector<GLubyte> InitialData)
+GLuint utilCreate3DVoxelFromData(unsigned int size, std::vector<GLfloat> InitialData)
 {
 	if(InitialData.size() != size*size*size*4)
 	{
@@ -32,7 +32,7 @@ GLuint utilCreate3DVoxelFromData(unsigned int size, std::vector<GLubyte> Initial
 	GLuint texID;
 	glGenTextures(1, &texID);
 	glBindTexture(GL_TEXTURE_3D, texID);
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, size, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, &InitialData[0]);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, size, size, size, 0, GL_RGBA, GL_FLOAT, &InitialData[0]);
 	
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
