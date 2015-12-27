@@ -8,3 +8,5 @@ build/
 *.bak
 *.swp*
 
+#ProjectFiles
+3dLocalisation.*
