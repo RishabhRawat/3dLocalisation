@@ -15,6 +15,7 @@
 
 Shader shader_rendering;
 Shader shader_merging;
+Shader shader_indicator;
 
 glm::mat4 MVP;
 glm::mat4 Projection, View, Model;
@@ -91,8 +92,7 @@ void init(void)
 
     const char* Vshader_render = "#version 440 \n in vec3 Vertex;\nvoid "
                           "main() {	\n	gl_Position = vec4(Vertex,1.0);\n}";
-    const char* Gshader_render = textFileRead("simpleG.geo");
-    //const char* Gshader = textFileRead("error2.geo");
+    const char* Gshader_render = textFileRead("simpleG.geom");
 
 	const char* Fshader_render = textFileRead("simpleFshader.frag");
     shader_rendering.init(Vshader_render, Fshader_render, Gshader_render, 0);
@@ -117,12 +117,12 @@ void init(void)
     glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0, texID[0],0);
     glFramebufferTexture(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT1, texID[1],0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    const char* Gshader_merge = textFileRead("simpleLayeredRender.geo");
+    const char* Gshader_merge = textFileRead("simpleLayeredRender.geom");
     const char* Fshader_merge = textFileRead("mergeVoxels.frag");
 
     shader_merging.init(Vshader_render, Fshader_merge, Gshader_merge, 0);
 
-
+    shader_indicator.init(Vshader_render,);
 	createSquare();
 
 	K_camera = glm::mat3(535.4, 0, 320.1, 0, 539.2, 247.6, 0, 0, 1);
@@ -172,9 +172,9 @@ void display(void)
 		shader_merging.unbind();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-
+    /*
 	{
-		glViewport(0,0,500,500);
+        glViewport(0,0,640,480);
 	    shader_rendering.bind();
 		glUniform4fv(shader_rendering.shaderUniform("cubeVector"), 8*4,&cubeVector[0][0]);
 	    glActiveTexture(GL_TEXTURE0);
@@ -193,7 +193,7 @@ void display(void)
 	    glBindVertexArray(0); // Unbind our Vertex Array Object
 	    
 	    shader_rendering.unbind();
-	}
+    }*/
 }
 
 void reshape(int width, int height)
@@ -346,7 +346,7 @@ int main(int argc, char** argv)
 	
 	glfwSetErrorCallback(glfw_error_callback);
 	
-	GLFWwindow* window = glfwCreateWindow(500, 500, "My Title", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
 	
 	if (!window)
 	{
