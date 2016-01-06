@@ -122,7 +122,8 @@ void init(void)
 
     shader_merging.init(Vshader_render, Fshader_merge, Gshader_merge, 0);
 
-    shader_indicator.init(Vshader_render,);
+    const char* Gshader_indicator = textFileRead("cubeGeomtry.geom");
+    shader_indicator.init(Vshader_render,Fshader_render,Gshader_indicator,0);
 	createSquare();
 
 	K_camera = glm::mat3(535.4, 0, 320.1, 0, 539.2, 247.6, 0, 0, 1);
