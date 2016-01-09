@@ -51,7 +51,8 @@ bool loadPngImage_16b_gray(const char *name, int &outWidth, int &outHeight, uint
 
     //std::cout<<"bit_depth: "<<bit_depth<<std::endl;
     //std::cout<<"color_type: "<<color_type<<std::endl;
-    outData=NULL;
+    if(outData != NULL)
+        delete outData;
 
     unsigned int row_bytes = png_get_rowbytes(png_ptr, info_ptr);
     outData = new uint16_t [row_bytes * outHeight];

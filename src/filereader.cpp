@@ -36,4 +36,4 @@ void fileReader::open(const char *filename){
         data.push_back(split(nextString,' '));
     }
 }
-fileReader::fileReader() {};
+fileReader::fileReader() {}

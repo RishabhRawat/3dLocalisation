@@ -23,15 +23,12 @@ fileReader qdata;
 glm::mat4 MVP;
 glm::mat4 Projection, View, Model;
 glm::mat4 K_camera, invK;
-//float pos[3] = {-1.90, -0.112, 1.55 };
-//float pos[3] = {1.90, 0.112, -1.55 };
-//float pos[3] = {0,0,0};
-//float pos[3] = {0.91, 2, -1.7 };
-float pos[3] = {1.02, 2.33, -1.9 };
+float pos[3] = {-1.9, 0.178, 1.85};
 
-GLfloat scale = .01;
-//glm::quat base(0.3f, -0.1f, -0.1f, 0.8f);
-glm::quat base(1.0f, 0.0f, 0.0f, 0.0f);
+
+GLfloat scale = .3;
+glm::quat base(1.0f, 0.08f, 0.02f, 0.25f);
+//glm::quat base(1.0f, 0.0f, 0.0f, 0.0f);
 int play = 1;
 
 
@@ -131,8 +128,8 @@ void init(void)
     createSquare();
 
     //Column Major Order
-    float near = 0.1;
-    float far = 1000;
+    float near = 1;
+    float far = 100;
     K_camera = glm::mat4(535.4f, 0.0f, 0.0f, 0.0f,
                          0.0f, 539.2f, 0.0f, 0.0f,
                          -320.1f, -247.6f, near+far, -1.0f,
@@ -264,6 +261,9 @@ void display(void)
         glm::quat q(stod(qdata[locframe][7]), stod(qdata[locframe][4]), stod(qdata[locframe][5]), stod(qdata[locframe][6]));
         glm::mat3 Model = glm::mat3_cast(glm::normalize(base));
         glm::mat3 Rmat = glm::mat3_cast(glm::normalize(q));
+        Rmat[2] = -Rmat[2];
+        Rmat = -Rmat;
+        //std::cout<<glm::to_string(glm::determinant(Rmat));
         Rmat = glm::transpose(Rmat);
         std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<" "<<scale<<std::endl;
 
