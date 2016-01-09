@@ -4,14 +4,22 @@ uniform vec3 alterPosition;
 
 uniform vec3 t_gk;
 uniform mat3 invR;
-uniform mat3 K_camera;
+uniform mat3 ModelR;
+uniform mat4 K_camera;
 
 in vec3 Vertex;
 
 void main(void)
 {
-    vec3 pixelCoord = K_camera*(invR*((Vertex*scale-alterPosition)-t_gk));
-    ivec2 pix = ivec2(pixelCoord/pixelCoord.z);
-    gl_Position = vec4(pix.x/640.0f,pix.y/480.0f,0,1);
+    mat4 Extrinsic;
+    Extrinsic[0] = vec4(invR[0],0);
+    Extrinsic[1] = vec4(invR[1],0);
+    Extrinsic[2] = vec4(invR[2],0);
+    Extrinsic[3] = vec4(-invR*t_gk,1);
+
+    gl_Position = K_camera*(Extrinsic*vec4(ModelR*(Vertex*scale)-alterPosition,1.0f));
+//    0.91 1.602 -1.7 0.07
+//    gl_Position = K_camera*(Extrinsic*(vec4(ModelR*(Vertex*scale),1.0f)-vec4(alterPosition,0.0f)));
+// K transpose
 
 }

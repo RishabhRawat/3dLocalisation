@@ -3,6 +3,8 @@
 #include "marchingCubes.h"
 #include "voxel.h"
 #include "GLutil.h"
+#include "filereader.h"
+
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -16,10 +18,23 @@
 
 Shader shader_cube;
 Shader shader_texture;
+fileReader qdata;
 
 glm::mat4 MVP;
 glm::mat4 Projection, View, Model;
-glm::mat3 K_camera, invK;
+glm::mat4 K_camera, invK;
+//float pos[3] = {-1.90, -0.112, 1.55 };
+//float pos[3] = {1.90, 0.112, -1.55 };
+//float pos[3] = {0,0,0};
+//float pos[3] = {0.91, 2, -1.7 };
+float pos[3] = {1.02, 2.33, -1.9 };
+
+GLfloat scale = .01;
+//glm::quat base(0.3f, -0.1f, -0.1f, 0.8f);
+glm::quat base(1.0f, 0.0f, 0.0f, 0.0f);
+int play = 1;
+
+
 
 GLuint texID[2];
 GLuint lookupTableTexture;
@@ -29,6 +44,8 @@ GLuint FramebufferName;
 GLuint gVAO[2], gVBO[2];
 
 Voxel pngObject;
+int frame = 0;
+int locframe = 0;
 
 
 void createSquare(void)
@@ -104,16 +121,6 @@ void init(void)
 
 
 
-    glGenTextures(1, &incomingImage);
-    glBindTexture(GL_TEXTURE_2D, incomingImage);
-    glTexImage2D(GL_TEXTURE_2D, 0,  GL_R16F , pngObject.width, pngObject.height, 0,   GL_RED,  GL_UNSIGNED_SHORT, &pngObject.depthMap[0]);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     const char* Vshader_cube = textFileRead("renderShape.vert");
     const char* Fshader_cube = textFileRead("passThrough.frag");
@@ -123,13 +130,16 @@ void init(void)
 
     createSquare();
 
-    K_camera = glm::mat3(535.4, 0, 320.1, 0, 539.2, 247.6, 0, 0, 1);
-    invK = glm::inverse(K_camera);
+    //Column Major Order
+    float near = 0.1;
+    float far = 1000;
+    K_camera = glm::mat4(535.4f, 0.0f, 0.0f, 0.0f,
+                         0.0f, 539.2f, 0.0f, 0.0f,
+                         -320.1f, -247.6f, near+far, -1.0f,
+                         0.0f, 0.0f, near*far, 0.0f);
+    K_camera = glm::ortho(0.0f,640.0f,0.0f,480.0f,near,far)*K_camera;
+    //invK = glm::inverse(K_camera);
 }
-GLfloat scale = 0;
-glm::quat base(0, 0, 0, 0);
-
-
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_E && (action == GLFW_PRESS || (action == GLFW_REPEAT)))
@@ -162,11 +172,71 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         base.w += 0.01;
         std::cout<<base.w<<std::endl;
     }
+    if (key == GLFW_KEY_LEFT && (action == GLFW_PRESS || (action == GLFW_REPEAT)))
+    {
+        pos[0] += 0.01;
+        std::cout<<pos[0]<<std::endl;
+    }
+    if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || (action == GLFW_REPEAT)))
+    {
+        pos[0] -= 0.01;
+        std::cout<<pos[0]<<std::endl;
+    }
+    if (key == GLFW_KEY_UP && (action == GLFW_PRESS || (action == GLFW_REPEAT)))
+    {
+        pos[1] -= 0.01;
+        std::cout<<pos[1]<<std::endl;
+    }
+    if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || (action == GLFW_REPEAT)))
+    {
+        pos[1] += 0.01;
+        std::cout<<pos[1]<<std::endl;
+    }
+    if (key == GLFW_KEY_PAGE_UP && (action == GLFW_PRESS || (action == GLFW_REPEAT)))
+    {
+        pos[2] -= 0.01;
+        std::cout<<pos[2]<<std::endl;
+    }
+    if (key == GLFW_KEY_PAGE_DOWN && (action == GLFW_PRESS || (action == GLFW_REPEAT)))
+    {
+        pos[2] += 0.01;
+        std::cout<<pos[2]<<std::endl;
+    }
+    if (key == GLFW_KEY_SPACE && (action == GLFW_PRESS ))
+    {
+        play = 1-play;
+    }
 }
 
 
 void display(void)
 {
+    //glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    if(!incomingImage) {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glGenTextures(1, &incomingImage);
+        glBindTexture(GL_TEXTURE_2D, incomingImage);
+        glTexImage2D(GL_TEXTURE_2D, 0,  GL_R16F , pngObject.width, pngObject.height, 0,   GL_RED,  GL_UNSIGNED_SHORT, &pngObject.depthMap[0]);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    }
+    else if(play){
+        glBindTexture(GL_TEXTURE_2D, incomingImage);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,  pngObject.width, pngObject.height,  GL_RED,  GL_UNSIGNED_SHORT, &pngObject.depthMap[0]);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+    }
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -190,15 +260,21 @@ void display(void)
         shader_cube.bind();
 
         glUniform1f(shader_cube.shaderUniform("scale"),scale);
-        glUniform3f(shader_cube.shaderUniform("alterPosition"),0,0,0);
-        glm::quat q(0.1843-base.x, -0.2495-base.y, 0.7955-base.z, -0.5204-base.w);
-        glm::mat3 Rmat = glm::mat3_cast(q);
-        Rmat = glm::inverse(Rmat);
+        glUniform3f(shader_cube.shaderUniform("alterPosition"),pos[0],pos[1],pos[2]);
+        glm::quat q(stod(qdata[locframe][7]), stod(qdata[locframe][4]), stod(qdata[locframe][5]), stod(qdata[locframe][6]));
+        glm::mat3 Model = glm::mat3_cast(glm::normalize(base));
+        glm::mat3 Rmat = glm::mat3_cast(glm::normalize(q));
+        Rmat = glm::transpose(Rmat);
+        std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<" "<<scale<<std::endl;
 
-        glUniform3f(shader_cube.shaderUniform("t_gk"),-2.1510, 0.6848, 1.4888);
+//        std::cout<<frame<<std::endl;
+//        std::cout<<locframe<<std::endl;
+
+        glUniform3f(shader_cube.shaderUniform("t_gk"),stod(qdata[locframe][1]), stod(qdata[locframe][2]),stod(qdata[locframe][3]));
         glUniformMatrix3fv(shader_cube.shaderUniform("invR"),1,GL_FALSE,&Rmat[0][0]);
-        glUniformMatrix3fv(shader_cube.shaderUniform("K_camera"),1,GL_TRUE,&K_camera[0][0]);
-        //glUniformMatrix3fv(shader_cube.shaderUniform("InverseK"),1,GL_TRUE,&invK[0][0]);
+        glUniformMatrix3fv(shader_cube.shaderUniform("ModelR"),1,GL_FALSE,&Model[0][0]);
+        glUniformMatrix4fv(shader_cube.shaderUniform("K_camera"),1,GL_TRUE,&K_camera[0][0]);
+//        glUniformMatrix4fv(shader_cube.shaderUniform("InverseK"),1,GL_FALSE,&invK[0][0]);
 
 
         glBindVertexArray(gVAO[1]);
@@ -220,7 +296,6 @@ void display(void)
 
     }
 }
-
 
 int main(int argc, char** argv)
 {
@@ -254,7 +329,6 @@ int main(int argc, char** argv)
 
     glfwSwapInterval(0);
 
-    pngObject.readPngDepthMap("1341841873.505863.png");
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
@@ -269,14 +343,26 @@ int main(int argc, char** argv)
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
 
     init();
+    if(argc < 2)
+        throw "VERY FEW ARGUMENTS";
+    std::string path(argv[1]);
+    fileReader imageFiles((path+"depth.txt").c_str());
+    qdata.open((path+"groundtruth.txt").c_str());
 
-    while (!glfwWindowShouldClose(window)){
+    frame = 0;
+    while (!glfwWindowShouldClose(window) && frame < imageFiles.getLength()){
+
+        pngObject.readPngDepthMap((path+imageFiles[frame][1]).c_str());
+        while(stod(qdata[locframe][0])<stod(imageFiles[frame][0]))
+            locframe++;
         display();
 
         glfwSetFPSinTitle(window);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+        if(play)
+            frame++;
 
     }
     glfwDestroyWindow(window);

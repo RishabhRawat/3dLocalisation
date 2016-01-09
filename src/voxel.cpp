@@ -5,7 +5,7 @@
 #include <cstdint>
 
 
-bool loadPngImage(const char *name, int &outWidth, int &outHeight, uint16_t *&outData) {
+bool loadPngImage_16b_gray(const char *name, int &outWidth, int &outHeight, uint16_t *&outData) {
 
     png_structp png_ptr;
     png_infop info_ptr;
@@ -49,8 +49,8 @@ bool loadPngImage(const char *name, int &outWidth, int &outHeight, uint16_t *&ou
     outHeight = height;
 
 
-    std::cout<<"bit_depth: "<<bit_depth<<std::endl;
-    std::cout<<"color_type: "<<color_type<<std::endl;
+    //std::cout<<"bit_depth: "<<bit_depth<<std::endl;
+    //std::cout<<"color_type: "<<color_type<<std::endl;
     outData=NULL;
 
     unsigned int row_bytes = png_get_rowbytes(png_ptr, info_ptr);
@@ -82,7 +82,7 @@ void Voxel::readPCD(const char *filename)
 
 int Voxel::readPngDepthMap(const char *filename)
 {
-	if(!loadPngImage(filename, width, height, depthMap)) return -1;
+    if(!loadPngImage_16b_gray(filename, width, height, depthMap)) return -1;
     return 0;
 }
 
