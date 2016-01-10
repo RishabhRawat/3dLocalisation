@@ -12,8 +12,8 @@ in vec3 Vertex;
 void main(void)
 {
     mat4 Extrinsic;
-    Extrinsic[0] = vec4(invR[0],0);
-    Extrinsic[1] = vec4(invR[1],0);
+    Extrinsic[0] = vec4(-invR[0],0);
+    Extrinsic[1] = vec4(-invR[1],0);
     Extrinsic[2] = vec4(invR[2],0);
     Extrinsic[3] = vec4(-invR*t_gk,1);
     //Only extrinsic means z comes outside screen

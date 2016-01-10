@@ -18,17 +18,19 @@
 
 Shader shader_cube;
 Shader shader_texture;
-fileReader qdata;
+fileReader qdata, imageFiles;
 
 glm::mat4 MVP;
 glm::mat4 Projection, View, Model;
 glm::mat4 K_camera, invK;
-float pos[3] = {-1.9, 0.178, 1.85};
+//float pos[3] = {-2.51, 1.248, 2.79};
+
+float pos[3] = {2.43, 5, 3.68 };
 
 
 GLfloat scale = .3;
-glm::quat base(1.0f, 0.08f, 0.02f, 0.25f);
-//glm::quat base(1.0f, 0.0f, 0.0f, 0.0f);
+//glm::quat base(1.0f, 0.08f, 0.02f, 0.25f);
+glm::quat base(1.0f, 0.0f, 0.0f, 0.0f);
 int play = 1;
 
 
@@ -106,6 +108,10 @@ void createSquare(void)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
+}
+
+double interpolate (double a, double b, double c, double l, double m){
+    return l + ((c-a)/(b-a))*(m-l);
 }
 
 void init(void)
@@ -258,11 +264,21 @@ void display(void)
 
         glUniform1f(shader_cube.shaderUniform("scale"),scale);
         glUniform3f(shader_cube.shaderUniform("alterPosition"),pos[0],pos[1],pos[2]);
-        glm::quat q(stod(qdata[locframe][7]), stod(qdata[locframe][4]), stod(qdata[locframe][5]), stod(qdata[locframe][6]));
+
+        float w = interpolate(stod(qdata[locframe][0]),stod(qdata[locframe+1][0]),stod(imageFiles[frame][0]),
+                stod(qdata[locframe][7]),stod(qdata[locframe+1][7]));
+        float x = interpolate(stod(qdata[locframe][0]),stod(qdata[locframe+1][0]),stod(imageFiles[frame][0]),
+                stod(qdata[locframe][4]),stod(qdata[locframe+1][4]));
+        float y = interpolate(stod(qdata[locframe][0]),stod(qdata[locframe+1][0]),stod(imageFiles[frame][0]),
+                stod(qdata[locframe][5]),stod(qdata[locframe+1][5]));
+        float z = interpolate(stod(qdata[locframe][0]),stod(qdata[locframe+1][0]),stod(imageFiles[frame][0]),
+                stod(qdata[locframe][6]),stod(qdata[locframe+1][6]));
+
+        glm::quat q(w,x,y,z);
         glm::mat3 Model = glm::mat3_cast(glm::normalize(base));
         glm::mat3 Rmat = glm::mat3_cast(glm::normalize(q));
-        Rmat[2] = -Rmat[2];
-        Rmat = -Rmat;
+//        Rmat[2] = -Rmat[2];
+//        Rmat = -Rmat;
         //std::cout<<glm::to_string(glm::determinant(Rmat));
         Rmat = glm::transpose(Rmat);
         std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<" "<<scale<<std::endl;
@@ -346,14 +362,15 @@ int main(int argc, char** argv)
     if(argc < 2)
         throw "VERY FEW ARGUMENTS";
     std::string path(argv[1]);
-    fileReader imageFiles((path+"depth.txt").c_str());
+    imageFiles.open((path+"depth.txt").c_str());
     qdata.open((path+"groundtruth.txt").c_str());
 
-    frame = 0;
+    frame = 1;
+    locframe = 1;
     while (!glfwWindowShouldClose(window) && frame < imageFiles.getLength()){
 
         pngObject.readPngDepthMap((path+imageFiles[frame][1]).c_str());
-        while(stod(qdata[locframe][0])<stod(imageFiles[frame][0]))
+        while(stod(qdata[locframe][0])<stod(imageFiles[frame][0]) && stod(qdata[locframe+1][0])<stod(imageFiles[frame][0]))
             locframe++;
         display();
 
