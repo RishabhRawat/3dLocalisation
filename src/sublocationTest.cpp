@@ -1,5 +1,4 @@
 #include <iostream>
-#include "voxelOperations.h"
 #include "marchingCubes.h"
 #include "voxel.h"
 #include "GLutil.h"
