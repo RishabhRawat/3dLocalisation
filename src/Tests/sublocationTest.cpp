@@ -25,7 +25,7 @@ glm::mat4 Projection, View, Model;
 glm::mat4 K_camera, invK;
 //float pos[3] = {-2.51, 1.248, 2.79};
 
-float pos[3] = {2.43, 5, 3.68 };
+float pos[3] = {-1.55, -0.2, 0 };
 
 
 GLfloat scale = .3;
@@ -277,8 +277,7 @@ void display(void)
         glm::quat q(w,x,y,z);
         glm::mat3 Model = glm::mat3_cast(glm::normalize(base));
         glm::mat3 Rmat = glm::mat3_cast(glm::normalize(q));
-//        Rmat[2] = -Rmat[2];
-//        Rmat = -Rmat;
+
         //std::cout<<glm::to_string(glm::determinant(Rmat));
         Rmat = glm::transpose(Rmat);
         std::cout<<pos[0]<<" "<<pos[1]<<" "<<pos[2]<<" "<<scale<<std::endl;
@@ -289,7 +288,7 @@ void display(void)
         glUniform3f(shader_cube.shaderUniform("t_gk"),stod(qdata[locframe][1]), stod(qdata[locframe][2]),stod(qdata[locframe][3]));
         glUniformMatrix3fv(shader_cube.shaderUniform("invR"),1,GL_FALSE,&Rmat[0][0]);
         glUniformMatrix3fv(shader_cube.shaderUniform("ModelR"),1,GL_FALSE,&Model[0][0]);
-        glUniformMatrix4fv(shader_cube.shaderUniform("K_camera"),1,GL_TRUE,&K_camera[0][0]);
+        glUniformMatrix4fv(shader_cube.shaderUniform("K_camera"),1,GL_FALSE,&K_camera[0][0]);
 //        glUniformMatrix4fv(shader_cube.shaderUniform("InverseK"),1,GL_FALSE,&invK[0][0]);
 
 
